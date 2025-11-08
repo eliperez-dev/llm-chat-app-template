@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>TransferTree</title>
+		<title>Better Transfer</title>
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -101,6 +101,327 @@
 				width: 100%;
 				max-width: 600px;
 				position: relative;
+				margin: 0 auto;
+			}
+
+			/* Landing Page Styles */
+		.landing-page {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100vh;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			z-index: 10000;
+			transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+		}
+
+			.landing-page.hidden {
+				transform: translateX(-100%);
+				opacity: 0;
+			}
+
+		.app-container {
+			position: relative;
+			width: 100%;
+			transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+			transform: translateX(100%);
+			opacity: 0;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			min-height: 100vh;
+		}
+
+			.app-container.visible {
+				transform: translateX(0);
+				opacity: 1;
+			}
+
+			.landing-content {
+				text-align: center;
+				max-width: 700px;
+				padding: 2rem;
+				animation: fadeInUp 0.8s ease-out;
+			}
+
+			.landing-title {
+				font-size: 4rem;
+				font-weight: 700;
+				color: #3d3d2f;
+				margin-bottom: 1rem;
+				letter-spacing: -0.03em;
+				line-height: 1.1;
+			}
+
+			.landing-tagline {
+				font-size: 1.15rem;
+				color: #6b6857;
+				margin-bottom: 3rem;
+				font-weight: 400;
+				max-width: 500px;
+				margin-left: auto;
+				margin-right: auto;
+			}
+
+			/* Start Button */
+			.start-button {
+				background: linear-gradient(135deg, #7a9b6c, #8fad7d);
+				color: white;
+				border: none;
+				border-radius: 16px;
+				padding: 1.25rem 3rem;
+				font-size: 1.1rem;
+				font-weight: 600;
+				cursor: none;
+				transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+				font-family: 'Inter', sans-serif;
+				box-shadow: 0 8px 24px rgba(122, 155, 108, 0.35);
+				margin-top: 2rem;
+			}
+
+			.start-button:hover {
+				transform: translateY(-3px) scale(1.05);
+				box-shadow: 0 12px 32px rgba(122, 155, 108, 0.45);
+			}
+
+			/* Chat Sidebar Styles */
+			.chat-toggle-button {
+				position: fixed;
+				bottom: 2rem;
+				right: 2rem;
+				width: 60px;
+				height: 60px;
+				background: linear-gradient(135deg, #7a9b6c, #8fad7d);
+				border: none;
+				border-radius: 50%;
+				display: none;
+				align-items: center;
+				justify-content: center;
+				cursor: none;
+				box-shadow: 0 8px 24px rgba(122, 155, 108, 0.4);
+				z-index: 9000;
+				transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+			}
+
+			.chat-toggle-button.visible {
+				display: flex;
+			}
+
+			.chat-toggle-button:hover {
+				transform: scale(1.1);
+				box-shadow: 0 12px 32px rgba(122, 155, 108, 0.5);
+			}
+
+			.chat-toggle-button svg {
+				width: 28px;
+				height: 28px;
+				fill: white;
+			}
+
+			/* Chat Sidebar */
+			.chat-sidebar {
+				position: fixed;
+				top: 2rem;
+				right: 2rem;
+				bottom: 2rem;
+				width: 400px;
+				background: rgba(255, 255, 255, 0.95);
+				backdrop-filter: blur(20px);
+				border-radius: 24px;
+				box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+				transform: translateX(calc(100% + 2rem));
+				transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+				z-index: 8999;
+				display: flex;
+				flex-direction: column;
+				overflow: hidden;
+			}
+
+			.chat-sidebar.open {
+				transform: translateX(0);
+			}
+
+		.app-container {
+			position: relative;
+			width: 100%;
+			transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1), margin-right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+			transform: translateX(100%);
+			opacity: 0;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			min-height: 100vh;
+		}
+
+			.app-container.chat-open {
+				margin-right: 420px;
+			}
+
+			/* Chat Header */
+			.chat-header {
+				padding: 1.5rem;
+				border-bottom: 1px solid rgba(122, 155, 108, 0.2);
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+
+			.chat-header h3 {
+				font-size: 1.1rem;
+				font-weight: 600;
+				color: #3d3d2f;
+			}
+
+			.chat-close {
+				background: none;
+				border: none;
+				font-size: 1.5rem;
+				color: #8a8572;
+				cursor: none;
+				padding: 0;
+				width: 32px;
+				height: 32px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				border-radius: 8px;
+				transition: all 0.2s ease;
+			}
+
+			.chat-close:hover {
+				background: rgba(122, 155, 108, 0.1);
+				color: #3d3d2f;
+			}
+
+			/* Chat Messages Area */
+			.chat-messages {
+				flex: 1;
+				overflow-y: auto;
+				padding: 1.5rem;
+				display: flex;
+				flex-direction: column;
+				gap: 1rem;
+			}
+
+			.chat-message {
+				max-width: 85%;
+				padding: 0.875rem 1rem;
+				border-radius: 12px;
+				font-size: 0.9rem;
+				line-height: 1.5;
+				animation: messageSlideIn 0.3s ease-out;
+			}
+
+			@keyframes messageSlideIn {
+				from {
+					opacity: 0;
+					transform: translateY(10px);
+				}
+				to {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+
+			.chat-message.assistant {
+				background: rgba(122, 155, 108, 0.15);
+				color: #3d3d2f;
+				align-self: flex-start;
+				border: 1px solid rgba(122, 155, 108, 0.2);
+			}
+
+			.chat-message.user {
+				background: linear-gradient(135deg, #7a9b6c, #8fad7d);
+				color: white;
+				align-self: flex-end;
+			}
+
+			/* Quick Action Buttons */
+			.quick-actions {
+				padding: 1rem 1.5rem;
+				display: flex;
+				flex-direction: column;
+				gap: 0.5rem;
+				border-top: 1px solid rgba(122, 155, 108, 0.2);
+			}
+
+			.quick-action-label {
+				font-size: 0.75rem;
+				color: #8a8572;
+				font-weight: 500;
+				margin-bottom: 0.25rem;
+			}
+
+			.quick-action-btn {
+				background: rgba(122, 155, 108, 0.1);
+				border: 1px solid rgba(122, 155, 108, 0.2);
+				border-radius: 8px;
+				padding: 0.625rem 0.875rem;
+				font-size: 0.85rem;
+				color: #3d3d2f;
+				cursor: none;
+				transition: all 0.2s ease;
+				font-family: 'Inter', sans-serif;
+				text-align: left;
+			}
+
+			.quick-action-btn:hover {
+				background: rgba(122, 155, 108, 0.2);
+				border-color: #7a9b6c;
+				transform: translateX(2px);
+			}
+
+			/* Chat Input */
+			.chat-input-container {
+				padding: 1.5rem;
+				border-top: 1px solid rgba(122, 155, 108, 0.2);
+				display: flex;
+				gap: 0.75rem;
+			}
+
+			.chat-input {
+				flex: 1;
+				padding: 0.875rem 1rem;
+				border: 2px solid rgba(122, 155, 108, 0.2);
+				border-radius: 12px;
+				font-size: 0.9rem;
+				font-family: 'Inter', sans-serif;
+				background: rgba(255, 255, 255, 0.5);
+				transition: all 0.2s ease;
+				resize: none;
+				max-height: 100px;
+			}
+
+			.chat-input:focus {
+				outline: none;
+				border-color: #7a9b6c;
+				background: white;
+			}
+
+			.chat-send-btn {
+				background: linear-gradient(135deg, #7a9b6c, #8fad7d);
+				border: none;
+				border-radius: 12px;
+				padding: 0.875rem 1.25rem;
+				color: white;
+				font-weight: 600;
+				cursor: none;
+				transition: all 0.2s ease;
+				font-size: 0.9rem;
+			}
+
+			.chat-send-btn:hover {
+				transform: scale(1.05);
+				box-shadow: 0 4px 12px rgba(122, 155, 108, 0.3);
+			}
+
+			.chat-send-btn:disabled {
+				opacity: 0.5;
+				cursor: not-allowed;
 			}
 
 			.header {
@@ -565,8 +886,21 @@
 				/* Restore default cursor on mobile */
 				.option-button, .checkbox-option, .back-button, 
 				.search-icon, .continue-button, .close-search,
-				input[type="checkbox"] {
+				input[type="checkbox"], .start-button {
 					cursor: pointer !important;
+				}
+
+				.landing-title {
+					font-size: 2.5rem;
+				}
+
+				.landing-tagline {
+					font-size: 1rem;
+				}
+
+				.start-button {
+					padding: 1rem 2rem;
+					font-size: 1rem;
 				}
 
 				.header h1 {
@@ -602,10 +936,53 @@
 					font-size: 0.65rem;
 				}
 
-				.swiper-container {
-					height: 500px;
-				}
+			.swiper-container {
+				height: 500px;
 			}
+
+			/* Mobile Chat Styles */
+			.chat-toggle-button {
+				bottom: 1.5rem;
+				right: 1.5rem;
+				width: 56px;
+				height: 56px;
+				cursor: pointer !important;
+			}
+
+			.chat-sidebar {
+				top: 0;
+				right: 0;
+				left: 0;
+				bottom: 0;
+				width: 100%;
+				border-radius: 0;
+				margin: 0;
+			}
+
+			.app-container.chat-open {
+				margin-right: 0;
+			}
+
+			.chat-header {
+				padding: 1.25rem;
+			}
+
+			.chat-messages {
+				padding: 1.25rem;
+			}
+
+			.chat-input-container {
+				padding: 1.25rem;
+			}
+
+			.quick-actions {
+				padding: 0.875rem 1.25rem;
+			}
+
+			.chat-close, .chat-send-btn, .quick-action-btn {
+				cursor: pointer !important;
+			}
+		}
 
 			/* Also hide cursor on touch devices */
 			@media (hover: none) and (pointer: coarse) {
@@ -626,13 +1003,62 @@
 		</style>
 	</head>
 	<body>
-		<!-- Custom Cursor Elements -->
-		<div class="cursor-dot"></div>
-		<div class="cursor-outline"></div>
+	<!-- Custom Cursor Elements -->
+	<div class="cursor-dot"></div>
+	<div class="cursor-outline"></div>
 
-		<div class="container">
+	<!-- Chat Toggle Button -->
+	<button class="chat-toggle-button" id="chat-toggle">
+		<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+			<path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
+		</svg>
+	</button>
+
+	<!-- Chat Sidebar -->
+	<div class="chat-sidebar" id="chat-sidebar">
+		<!-- Chat Header -->
+		<div class="chat-header">
+			<h3>Transfer Assistant</h3>
+			<button class="chat-close" id="chat-close">×</button>
+		</div>
+
+		<!-- Chat Messages -->
+		<div class="chat-messages" id="chat-messages">
+			<!-- Messages will be added dynamically -->
+		</div>
+
+		<!-- Quick Actions -->
+		<div class="quick-actions">
+			<div class="quick-action-label">Quick Actions</div>
+			<button class="quick-action-btn">What courses do I need?</button>
+			<button class="quick-action-btn">GPA requirements?</button>
+			<button class="quick-action-btn">Transfer deadlines?</button>
+			<button class="quick-action-btn">School comparison?</button>
+		</div>
+
+		<!-- Chat Input -->
+		<div class="chat-input-container">
+			<textarea class="chat-input" id="chat-input" placeholder="Ask anything..." rows="1"></textarea>
+			<button class="chat-send-btn" id="chat-send-btn">Send</button>
+		</div>
+	</div>
+
+	<!-- Landing Page -->
+		<div class="landing-page" id="landing-page">
+			<div class="landing-content">
+				<h1 class="landing-title">BetterTransfer</h1>
+				<p class="landing-tagline">Map your course requirements and track your progress from community college to university</p>
+
+				<!-- Start Button -->
+				<button class="start-button" onclick="startPlanning()">Get Started →</button>
+			</div>
+		</div>
+
+		<!-- App Container (Card Stack) -->
+		<div class="app-container" id="app-container">
+			<div class="container">
 			<div class="header">
-				<h1>TransferTree</h1>
+				<h1>Better Transfer</h1>
 				<p>Your path to UC/CSU transfer success</p>
 			</div>
 
@@ -835,12 +1261,13 @@
 				</div>
 			</div>
 
-		</div> <!-- End container -->
+			</div> <!-- End container -->
+		</div> <!-- End app-container -->
 
 		<!-- Swiper.js Library -->
 		<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
-		<script>
+	<script>
 			// Data
 			const allCCs = [
 				'Southwestern College',
@@ -946,10 +1373,10 @@
 				}
 				animateOutline();
 
-				// Hover effect on interactive elements
-				const interactiveElements = document.querySelectorAll(
-					'button, a, .option-button, .checkbox-option, .search-icon, .back-button, input[type="checkbox"]'
-				);
+			// Hover effect on interactive elements
+			const interactiveElements = document.querySelectorAll(
+				'button, a, .option-button, .checkbox-option, .search-icon, .back-button, input[type="checkbox"], .chat-toggle-button, .chat-close, .chat-send-btn, .quick-action-btn, textarea'
+			);
 
 				interactiveElements.forEach(el => {
 					el.addEventListener('mouseenter', () => {
@@ -1230,8 +1657,143 @@
 						checkbox.checked = false;
 						option.classList.remove('checked');
 					}
-				});
+		});
+	}
+
+	// ========== CHAT FUNCTIONALITY ==========
+	
+	const chatState = {
+		isOpen: false,
+		messages: []
+	};
+
+	function initChatSidebar() {
+		const chatToggle = document.getElementById('chat-toggle');
+		const chatSidebar = document.getElementById('chat-sidebar');
+		const chatClose = document.getElementById('chat-close');
+		const chatInput = document.getElementById('chat-input');
+		const chatSendBtn = document.getElementById('chat-send-btn');
+		const chatMessages = document.getElementById('chat-messages');
+		const appContainer = document.querySelector('.app-container');
+		const quickActionButtons = document.querySelectorAll('.quick-action-btn');
+
+		// Add welcome message
+		addMessage('assistant', "Hi! I'm here to help with your transfer planning. Ask me anything!");
+
+		// Toggle chat
+		chatToggle.addEventListener('click', () => {
+			toggleChat();
+		});
+
+		chatClose.addEventListener('click', () => {
+			toggleChat();
+		});
+
+		// Send message
+		chatSendBtn.addEventListener('click', () => {
+			sendMessage();
+		});
+
+		chatInput.addEventListener('keypress', (e) => {
+			if (e.key === 'Enter' && !e.shiftKey) {
+				e.preventDefault();
+				sendMessage();
 			}
-		</script>
-	</body>
+		});
+
+		// Quick action buttons
+		quickActionButtons.forEach(btn => {
+			btn.addEventListener('click', () => {
+				const message = btn.textContent;
+				addMessage('user', message);
+				chatInput.value = '';
+				
+				// Simulate response (placeholder)
+				setTimeout(() => {
+					addMessage('assistant', "I'm a UI placeholder right now! Backend functionality coming soon. 🌱");
+				}, 500);
+			});
+		});
+	}
+
+	function toggleChat() {
+		const chatToggle = document.getElementById('chat-toggle');
+		const chatSidebar = document.getElementById('chat-sidebar');
+		const appContainer = document.querySelector('.app-container');
+		
+		chatState.isOpen = !chatState.isOpen;
+		
+		if (chatState.isOpen) {
+			chatSidebar.classList.add('open');
+			appContainer.classList.add('chat-open');
+			chatToggle.style.display = 'none';
+		} else {
+			chatSidebar.classList.remove('open');
+			appContainer.classList.remove('chat-open');
+			chatToggle.style.display = 'flex';
+		}
+	}
+
+	function sendMessage() {
+		const chatInput = document.getElementById('chat-input');
+		const message = chatInput.value.trim();
+		
+		if (message === '') return;
+		
+		addMessage('user', message);
+		chatInput.value = '';
+		
+		// Simulate response (placeholder)
+		setTimeout(() => {
+			addMessage('assistant', "I'm a UI placeholder right now! Backend functionality coming soon. 🌱");
+		}, 500);
+	}
+
+	function addMessage(type, text) {
+		const chatMessages = document.getElementById('chat-messages');
+		const messageDiv = document.createElement('div');
+		messageDiv.className = `chat-message ${type}`;
+		messageDiv.textContent = text;
+		
+		chatMessages.appendChild(messageDiv);
+		chatMessages.scrollTop = chatMessages.scrollHeight;
+		
+		chatState.messages.push({ type, text });
+	}
+
+	// Show chat toggle when app starts (synchronized slideshow transition)
+	function startPlanning() {
+		const landingPage = document.getElementById('landing-page');
+		const appContainer = document.querySelector('.app-container');
+		const chatToggle = document.getElementById('chat-toggle');
+		
+		// Show app container immediately (behind landing page)
+		appContainer.style.display = 'flex';
+		
+		// Small delay to ensure display change is registered
+		setTimeout(() => {
+			// Trigger both animations simultaneously - landing page out, cards in
+			landingPage.style.transform = 'translateX(-100%)';
+			landingPage.style.opacity = '0';
+			appContainer.style.transform = 'translateX(0)';
+			appContainer.style.opacity = '1';
+			
+			// Clean up landing page after transition completes
+			setTimeout(() => {
+				landingPage.style.display = 'none';
+			}, 300);
+			
+			// Show chat toggle button after animation
+			setTimeout(() => {
+				chatToggle.classList.add('visible');
+			}, 250);
+		}, 20);
+	}
+
+	// Initialize chat when page loads
+	window.addEventListener('DOMContentLoaded', () => {
+		initChatSidebar();
+	});
+</script>
+</body>
 </html>
