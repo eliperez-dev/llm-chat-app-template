@@ -3,19 +3,15 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>LLM Chat App</title>
+		<title>TransferTree</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+		
+		<!-- Swiper.js CSS -->
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+		
 		<style>
-			:root {
-				--primary-color: #f6821f;
-				--primary-hover: #e67e22;
-				--light-bg: #f9fafb;
-				--border-color: #e5e7eb;
-				--text-color: #1f2937;
-				--text-light: #6b7280;
-				--user-msg-bg: #fff2e6;
-				--assistant-msg-bg: #f3f4f6;
-			}
-
 			* {
 				box-sizing: border-box;
 				margin: 0;
@@ -23,155 +19,1219 @@
 			}
 
 			body {
-				font-family:
-					-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
-					Cantarell, sans-serif;
-				line-height: 1.6;
-				color: var(--text-color);
-				max-width: 800px;
-				margin: 0 auto;
-				padding: 1rem;
+				font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+				background: radial-gradient(circle at center, 
+					rgba(240, 230, 190, 0.6) 0%, 
+					rgba(200, 210, 180, 0.4) 20%,
+					rgba(232, 227, 216, 0.8) 45%,
+					#e8e3d8 70%, 
+					#e5e0d3 100%);
+				min-height: 100vh;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				padding: 2rem;
+				overflow: hidden;
+				cursor: none; /* Hide default cursor */
 			}
 
-			header {
+			/* Custom Cursor */
+			.cursor-dot {
+				width: 8px;
+				height: 8px;
+				background: #7a9b6c;
+				border-radius: 50%;
+				position: fixed;
+				pointer-events: none;
+				z-index: 9999;
+				transition: transform 0.15s ease, opacity 0.3s ease;
+				transform: translate(-50%, -50%);
+				opacity: 1;
+			}
+
+			.cursor-outline {
+				width: 40px;
+				height: 40px;
+				border: 2px solid rgba(122, 155, 108, 0.4);
+				border-radius: 50%;
+				position: fixed;
+				pointer-events: none;
+				z-index: 9998;
+				transition: all 0.15s ease-out;
+				transform: translate(-50%, -50%);
+			}
+
+			.cursor-outline.hover {
+				width: 60px;
+				height: 60px;
+				border-color: rgba(122, 155, 108, 0.6);
+				background: rgba(122, 155, 108, 0.08);
+			}
+
+			.cursor-dot.click {
+				transform: translate(-50%, -50%) scale(0.5);
+			}
+
+			/* Click Ripple Effect */
+			.ripple {
+				position: fixed;
+				border-radius: 50%;
+				background: rgba(122, 155, 108, 0.3);
+				pointer-events: none;
+				z-index: 9997;
+				animation: ripple-animation 0.6s ease-out;
+			}
+
+			@keyframes ripple-animation {
+				from {
+					width: 0px;
+					height: 0px;
+					opacity: 1;
+					transform: translate(-50%, -50%);
+				}
+				to {
+					width: 100px;
+					height: 100px;
+					opacity: 0;
+					transform: translate(-50%, -50%);
+				}
+			}
+
+			.container {
+				width: 100%;
+				max-width: 600px;
+				position: relative;
+			}
+
+			.header {
 				text-align: center;
 				margin-bottom: 2rem;
-				padding: 1rem 0;
-				border-bottom: 1px solid var(--border-color);
+				animation: fadeIn 0.6s ease-out;
 			}
 
-			h1 {
-				font-size: 1.5rem;
-				color: var(--primary-color);
+			.header h1 {
+				font-size: 2.2rem;
+				font-weight: 700;
+				color: #3d3d2f;
+				margin-bottom: 0.5rem;
 			}
 
-			.chat-container {
+			.header p {
+				font-size: 0.95rem;
+				color: #6b6857;
+				font-weight: 400;
+			}
+
+			/* Segmented Progress Bar */
+			.progress-container {
+				background: rgba(255, 255, 255, 0.6);
+				border-radius: 20px;
+				padding: 1.5rem 2rem;
+				margin-bottom: 3rem;
+				box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+			}
+
+			.progress-bars {
 				display: flex;
-				flex-direction: column;
-				height: calc(100vh - 200px);
-				min-height: 400px;
-				border: 1px solid var(--border-color);
-				border-radius: 8px;
+				gap: 0.5rem;
+				margin-bottom: 1rem;
+			}
+
+			.progress-segment {
+				flex: 1;
+				height: 8px;
+				background: #d4cfc4;
+				border-radius: 10px;
+				transition: all 0.4s ease;
+				position: relative;
 				overflow: hidden;
 			}
 
-			.chat-messages {
-				flex: 1;
-				overflow-y: auto;
-				padding: 1rem;
-				background-color: var(--light-bg);
+			.progress-segment.completed {
+				background: linear-gradient(90deg, #7a9b6c, #8fad7d);
 			}
 
-			.message {
-				margin-bottom: 1rem;
-				padding: 0.75rem;
-				border-radius: 8px;
-				max-width: 80%;
+			.progress-segment.active {
+				background: linear-gradient(90deg, #a8b89f, #7a9b6c);
+				animation: pulse 2s ease-in-out infinite;
 			}
 
-			.user-message {
-				background-color: var(--user-msg-bg);
-				align-self: flex-end;
-				margin-left: auto;
+			@keyframes pulse {
+				0%, 100% { opacity: 1; }
+				50% { opacity: 0.7; }
 			}
 
-			.assistant-message {
-				background-color: var(--assistant-msg-bg);
-				align-self: flex-start;
-			}
-
-			.message-input {
+			.progress-labels {
 				display: flex;
-				padding: 0.75rem;
-				border-top: 1px solid var(--border-color);
-				background-color: white;
+				justify-content: space-between;
+				margin-top: 0.75rem;
 			}
 
-			#user-input {
+			.progress-label {
+				font-size: 0.75rem;
+				color: #8a8572;
+				font-weight: 500;
+				text-align: center;
 				flex: 1;
-				padding: 0.75rem;
-				border: 1px solid var(--border-color);
-				border-radius: 4px;
-				font-family: inherit;
-				resize: none;
-				min-height: 44px;
+				transition: all 0.3s ease;
 			}
 
-			#send-button {
-				margin-left: 0.5rem;
-				padding: 0 1rem;
-				background-color: var(--primary-color);
+			.progress-label.active,
+			.progress-label.completed {
+				color: #4a4a37;
+				font-weight: 600;
+			}
+
+			/* Swiper Container for Stacked Cards */
+			.swiper-container {
+				width: 100%;
+				height: 550px;
+				position: relative;
+			}
+
+			.swiper-slide {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				border-radius: 30px;
+				font-size: 22px;
+				font-weight: bold;
+				color: #fff;
+			}
+
+			/* Individual Card Styles with gradient backgrounds */
+			.card {
+				width: 100%;
+				background: linear-gradient(135deg, #e8e9ca 0%, #d5d9b8 100%);
+				border-radius: 30px;
+				padding: 3rem 2.5rem;
+				box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+				min-height: 480px;
+				position: relative;
+			}
+
+			.card-1 { background: linear-gradient(135deg, #e8e9ca 0%, #d5d9b8 100%); }
+			.card-2 { background: linear-gradient(135deg, #c9d6d9 0%, #b3c5c9 100%); }
+			.card-3 { background: linear-gradient(135deg, #dfd8c9 0%, #cfc4ae 100%); }
+			.card-4 { background: linear-gradient(135deg, #d9ccc9 0%, #c9b8b3 100%); }
+
+			.section-title {
+				font-size: 1.65rem;
+				font-weight: 600;
+				color: #3d3d2f;
+				margin-bottom: 0.5rem;
+				text-align: center;
+			}
+
+			.section-subtitle {
+				font-size: 0.9rem;
+				color: #6b6857;
+				margin-bottom: 2rem;
+				text-align: center;
+				font-weight: 400;
+			}
+
+			/* Button Grid */
+			.button-grid {
+				display: grid;
+				gap: 0.7rem;
+				margin-top: 1.5rem;
+			}
+
+			.option-button {
+				background: rgba(255, 255, 255, 0.7);
+				border: 2px solid rgba(122, 155, 108, 0.2);
+				border-radius: 14px;
+				padding: 1.1rem 1.25rem;
+				font-size: 0.95rem;
+				font-weight: 500;
+				color: #3d3d2f;
+				cursor: none;
+				transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+				font-family: 'Inter', sans-serif;
+				text-align: left;
+				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+			}
+
+			.option-button:hover {
+				background: rgba(255, 255, 255, 0.95);
+				transform: translateY(-3px) scale(1.02);
+				box-shadow: 0 8px 20px rgba(122, 155, 108, 0.15);
+				border-color: #7a9b6c;
+			}
+
+			.option-button:active {
+				transform: translateY(0);
+			}
+
+			.option-button.selected {
+				background: rgba(122, 155, 108, 0.15);
+				border-color: #7a9b6c;
+				color: #3d3d2f;
+				font-weight: 600;
+			}
+
+			/* Back Button */
+			.back-button {
+				position: absolute;
+				top: 2.5rem;
+				left: 2.5rem;
+				width: 40px;
+				height: 40px;
+				background: rgba(255, 255, 255, 0.8);
+				border: 2px solid rgba(122, 155, 108, 0.2);
+				border-radius: 12px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				cursor: none;
+				transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+				z-index: 10;
+			}
+
+			.back-button:hover {
+				background: white;
+				border-color: #7a9b6c;
+				transform: translateX(-3px) scale(1.05);
+				box-shadow: 0 4px 12px rgba(122, 155, 108, 0.2);
+			}
+
+			.back-button svg {
+				width: 20px;
+				height: 20px;
+				stroke: #3d3d2f;
+				stroke-width: 2.5;
+			}
+
+			/* Search Icon */
+			.search-container {
+				position: absolute;
+				top: 2.5rem;
+				right: 2.5rem;
+				z-index: 10;
+			}
+
+			.search-icon {
+				width: 40px;
+				height: 40px;
+				background: rgba(255, 255, 255, 0.8);
+				border: 2px solid rgba(122, 155, 108, 0.2);
+				border-radius: 12px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				cursor: none;
+				transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+			}
+
+			.search-icon:hover {
+				background: white;
+				border-color: #7a9b6c;
+				transform: scale(1.08);
+				box-shadow: 0 6px 20px rgba(122, 155, 108, 0.2);
+			}
+
+			.search-icon svg {
+				width: 18px;
+				height: 18px;
+				stroke: #3d3d2f;
+				stroke-width: 2;
+			}
+
+			/* Search Overlay */
+			.search-overlay {
+				display: none;
+				position: fixed;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background: rgba(61, 61, 47, 0.4);
+				backdrop-filter: blur(12px);
+				z-index: 1000;
+				align-items: center;
+				justify-content: center;
+				animation: fadeIn 0.3s ease;
+			}
+
+			.search-overlay.active {
+				display: flex;
+			}
+
+			.search-modal {
+				background: linear-gradient(135deg, #f5f5e8 0%, #ebe8d8 100%);
+				border-radius: 24px;
+				padding: 2rem;
+				width: 90%;
+				max-width: 480px;
+				box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+				animation: slideUp 0.3s ease;
+			}
+
+			@keyframes slideUp {
+				from {
+					opacity: 0;
+					transform: translateY(30px) scale(0.95);
+				}
+				to {
+					opacity: 1;
+					transform: translateY(0) scale(1);
+				}
+			}
+
+			.search-header {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-bottom: 1.5rem;
+			}
+
+			.search-header h3 {
+				font-size: 1.2rem;
+				font-weight: 600;
+				color: #3d3d2f;
+			}
+
+			.close-search {
+				background: rgba(255, 255, 255, 0.6);
+				border: 2px solid rgba(122, 155, 108, 0.2);
+				font-size: 1.4rem;
+				color: #3d3d2f;
+				cursor: none;
+				padding: 0;
+				width: 34px;
+				height: 34px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				border-radius: 10px;
+				transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+			}
+
+			.close-search:hover {
+				background: white;
+				border-color: #7a9b6c;
+				transform: scale(1.1) rotate(90deg);
+			}
+
+			.search-input-container {
+				margin-bottom: 1.5rem;
+			}
+
+			.search-input {
+				width: 100%;
+				padding: 0.875rem 1rem;
+				border: 2px solid rgba(122, 155, 108, 0.2);
+				border-radius: 12px;
+				font-size: 0.95rem;
+				font-family: 'Inter', sans-serif;
+				transition: all 0.2s ease;
+				background: rgba(255, 255, 255, 0.7);
+			}
+
+			.search-input:focus {
+				outline: none;
+				border-color: #7a9b6c;
+				box-shadow: 0 0 0 3px rgba(122, 155, 108, 0.1);
+				background: white;
+			}
+
+			.search-results {
+				max-height: 400px;
+				overflow-y: auto;
+			}
+
+			/* Checkbox Option Button */
+			.checkbox-option {
+				display: flex;
+				align-items: center;
+				background: rgba(255, 255, 255, 0.7);
+				border: 2px solid rgba(122, 155, 108, 0.2);
+				border-radius: 14px;
+				padding: 1rem 1.25rem;
+				font-size: 0.95rem;
+				font-weight: 500;
+				color: #3d3d2f;
+				cursor: none;
+				transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+				font-family: 'Inter', sans-serif;
+				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+				margin-bottom: 0.7rem;
+			}
+
+			.checkbox-option:hover {
+				background: rgba(255, 255, 255, 0.95);
+				transform: translateY(-2px) scale(1.01);
+				box-shadow: 0 6px 18px rgba(122, 155, 108, 0.12);
+				border-color: #7a9b6c;
+			}
+
+			.checkbox-option input[type="checkbox"] {
+				width: 20px;
+				height: 20px;
+				margin-right: 1rem;
+				cursor: none;
+				accent-color: #7a9b6c;
+			}
+
+			.checkbox-option.checked {
+				background: rgba(122, 155, 108, 0.15);
+				border-color: #7a9b6c;
+				font-weight: 600;
+			}
+
+			.continue-button {
+				background: linear-gradient(135deg, #7a9b6c, #8fad7d);
 				color: white;
 				border: none;
-				border-radius: 4px;
-				cursor: pointer;
-				transition: background-color 0.2s;
+				border-radius: 14px;
+				padding: 1.15rem;
+				font-size: 1rem;
+				font-weight: 600;
+				cursor: none;
+				transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+				font-family: 'Inter', sans-serif;
+				width: 100%;
+				margin-top: 2rem;
+				box-shadow: 0 6px 20px rgba(122, 155, 108, 0.3);
 			}
 
-			#send-button:hover {
-				background-color: var(--primary-hover);
+			.continue-button:hover {
+				transform: translateY(-3px) scale(1.02);
+				box-shadow: 0 10px 30px rgba(122, 155, 108, 0.45);
 			}
 
-			#send-button:disabled {
-				background-color: var(--text-light);
-				cursor: not-allowed;
+			/* Animations */
+			@keyframes fadeIn {
+				from {
+					opacity: 0;
+					transform: translateY(-20px);
+				}
+				to {
+					opacity: 1;
+					transform: translateY(0);
+				}
 			}
 
-			.typing-indicator {
-				display: none;
-				margin-bottom: 1rem;
-				font-style: italic;
-				color: var(--text-light);
+			@keyframes slideDown {
+				from {
+					opacity: 0;
+					transform: translateY(-30px);
+				}
+				to {
+					opacity: 1;
+					transform: translateY(0);
+				}
 			}
 
-			.typing-indicator.visible {
-				display: block;
-			}
-
-			footer {
-				margin-top: 1rem;
+			/* Summary Display */
+			.summary-display {
 				text-align: center;
-				font-size: 0.85rem;
-				color: var(--text-light);
+				margin: 1.5rem 0;
+				background: rgba(255, 255, 255, 0.5);
+				padding: 1.5rem;
+				border-radius: 16px;
+			}
+
+			.summary-item {
+				font-size: 0.95rem;
+				color: #3d3d2f;
+				line-height: 2;
+				margin-bottom: 0.5rem;
+			}
+
+			.summary-item strong {
+				color: #3d3d2f;
+				font-weight: 600;
+			}
+
+			.summary-item span {
+				color: #6b6857;
+			}
+
+			/* Responsive */
+			@media (max-width: 768px) {
+				body {
+					padding: 1rem;
+					cursor: auto !important; /* Show default cursor on mobile */
+				}
+
+				/* Hide custom cursor on mobile */
+				.cursor-dot, .cursor-outline {
+					display: none !important;
+				}
+
+				/* Restore default cursor on mobile */
+				.option-button, .checkbox-option, .back-button, 
+				.search-icon, .continue-button, .close-search,
+				input[type="checkbox"] {
+					cursor: pointer !important;
+				}
+
+				.header h1 {
+					font-size: 1.8rem;
+				}
+				
+				.card {
+					padding: 2rem 1.5rem;
+					min-height: 450px;
+				}
+
+				.search-container, .back-button {
+					top: 2rem;
+				}
+
+				.search-container {
+					right: 1.5rem;
+				}
+
+				.back-button {
+					left: 1.5rem;
+				}
+				
+				.section-title {
+					font-size: 1.4rem;
+				}
+
+				.progress-container {
+					padding: 1.25rem 1.5rem;
+				}
+
+				.progress-label {
+					font-size: 0.65rem;
+				}
+
+				.swiper-container {
+					height: 500px;
+				}
+			}
+
+			/* Also hide cursor on touch devices */
+			@media (hover: none) and (pointer: coarse) {
+				body {
+					cursor: auto !important;
+				}
+
+				.cursor-dot, .cursor-outline {
+					display: none !important;
+				}
+
+				.option-button, .checkbox-option, .back-button, 
+				.search-icon, .continue-button, .close-search,
+				input[type="checkbox"] {
+					cursor: pointer !important;
+				}
 			}
 		</style>
 	</head>
 	<body>
-		<header>
-			<h1>Cloudflare AI Chat   test</h1>
-			<p>Powered by Cloudflare Workers AI</p>
-		</header>
+		<!-- Custom Cursor Elements -->
+		<div class="cursor-dot"></div>
+		<div class="cursor-outline"></div>
 
-		<div class="chat-container">
-			<div id="chat-messages" class="chat-messages">
-				<div class="message assistant-message">
-					<p>
-						Hello! I'm an LLM chat app powered by Cloudflare Workers AI. How can
-						I help you today?
-					</p>
+		<div class="container">
+			<div class="header">
+				<h1>TransferTree</h1>
+				<p>Your path to UC/CSU transfer success</p>
+			</div>
+
+			<!-- Segmented Progress Bar -->
+			<div class="progress-container">
+				<div class="progress-bars">
+					<div class="progress-segment active" id="segment-1"></div>
+					<div class="progress-segment" id="segment-2"></div>
+					<div class="progress-segment" id="segment-3"></div>
+					<div class="progress-segment" id="segment-4"></div>
+				</div>
+				<div class="progress-labels">
+					<div class="progress-label active" id="label-1">Community<br>College</div>
+					<div class="progress-label" id="label-2">Target<br>Schools</div>
+					<div class="progress-label" id="label-3">Major</div>
+					<div class="progress-label" id="label-4">Ready</div>
 				</div>
 			</div>
 
-			<div class="typing-indicator" id="typing-indicator">
-				AI is thinking...
+			<!-- Swiper Card Stack -->
+			<div class="swiper-container" id="card-swiper">
+				<div class="swiper-wrapper">
+					
+					<!-- Card 1: Community College -->
+					<div class="swiper-slide">
+						<div class="card card-1">
+							<!-- Search Icon -->
+							<div class="search-container">
+								<div class="search-icon" onclick="openSearch('cc')">
+									<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+									</svg>
+								</div>
+							</div>
+
+							<h2 class="section-title">Select Your Community College</h2>
+							<p class="section-subtitle">Where are you currently enrolled?</p>
+							<div class="button-grid" id="cc-list">
+								<button class="option-button" onclick="selectCC('Southwestern College', this)">Southwestern College</button>
+								<button class="option-button" onclick="selectCC('Cuyamaca College', this)">Cuyamaca College</button>
+								<button class="option-button" onclick="selectCC('MiraCosta College', this)">MiraCosta College</button>
+								<button class="option-button" onclick="selectCC('San Diego Miramar College', this)">San Diego Miramar College</button>
+								<button class="option-button" onclick="selectCC('San Diego Mesa College', this)">San Diego Mesa College</button>
+							</div>
+						</div>
+					</div>
+
+					<!-- Card 2: Target Schools -->
+					<div class="swiper-slide">
+						<div class="card card-2">
+							<!-- Back Button -->
+							<div class="back-button" onclick="goBack()">
+								<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+								</svg>
+							</div>
+
+							<!-- Search Icon -->
+							<div class="search-container">
+								<div class="search-icon" onclick="openSearch('schools')">
+									<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+									</svg>
+								</div>
+							</div>
+
+							<h2 class="section-title">Choose Your Target Universities</h2>
+							<p class="section-subtitle">Select one or more schools (you can pick multiple)</p>
+							
+							<div id="school-list">
+								<label class="checkbox-option" onclick="toggleSchool('UC San Diego (UCSD)', this)">
+									<input type="checkbox" onchange="event.stopPropagation()">
+									<span>UC San Diego (UCSD)</span>
+								</label>
+								<label class="checkbox-option" onclick="toggleSchool('San Diego State University (SDSU)', this)">
+									<input type="checkbox" onchange="event.stopPropagation()">
+									<span>San Diego State University (SDSU)</span>
+								</label>
+								<label class="checkbox-option" onclick="toggleSchool('CSU Long Beach', this)">
+									<input type="checkbox" onchange="event.stopPropagation()">
+									<span>CSU Long Beach</span>
+								</label>
+								<label class="checkbox-option" onclick="toggleSchool('UC Berkeley', this)">
+									<input type="checkbox" onchange="event.stopPropagation()">
+									<span>UC Berkeley</span>
+								</label>
+								<label class="checkbox-option" onclick="toggleSchool('UCLA', this)">
+									<input type="checkbox" onchange="event.stopPropagation()">
+									<span>UCLA</span>
+								</label>
+							</div>
+
+							<div id="continue-container-2" style="display: none;">
+								<button class="continue-button" onclick="proceedToMajor()">Continue →</button>
+							</div>
+						</div>
+					</div>
+
+					<!-- Card 3: Major -->
+					<div class="swiper-slide">
+						<div class="card card-3">
+							<!-- Back Button -->
+							<div class="back-button" onclick="goBack()">
+								<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+								</svg>
+							</div>
+
+							<!-- Search Icon -->
+							<div class="search-container">
+								<div class="search-icon" onclick="openSearch('major')">
+									<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+									</svg>
+								</div>
+							</div>
+
+							<h2 class="section-title">Select Your Major</h2>
+							<p class="section-subtitle">What do you want to study?</p>
+							<div class="button-grid" id="major-list">
+								<button class="option-button" onclick="selectMajor('Computer Science', this)">Computer Science</button>
+								<button class="option-button" onclick="selectMajor('Business Administration', this)">Business Administration</button>
+								<button class="option-button" onclick="selectMajor('Psychology', this)">Psychology</button>
+								<button class="option-button" onclick="selectMajor('Engineering', this)">Engineering</button>
+								<button class="option-button" onclick="selectMajor('Biology', this)">Biology</button>
+							</div>
+						</div>
+					</div>
+
+					<!-- Card 4: Summary -->
+					<div class="swiper-slide">
+						<div class="card card-4">
+							<!-- Back Button -->
+							<div class="back-button" onclick="goBack()">
+								<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+								</svg>
+							</div>
+
+							<h2 class="section-title">Ready to Begin!</h2>
+							<p class="section-subtitle">Let's map out your transfer journey</p>
+							<div class="summary-display">
+								<div class="summary-item">
+									<strong>Community College:</strong> <span id="selected-cc"></span>
+								</div>
+								<div class="summary-item">
+									<strong>Target Universities:</strong> <span id="selected-schools"></span>
+								</div>
+								<div class="summary-item">
+									<strong>Major:</strong> <span id="selected-major"></span>
+								</div>
+							</div>
+							<button class="continue-button" onclick="continueToNext()">Continue to Course Selection →</button>
+						</div>
+					</div>
+
+				</div> <!-- End swiper-wrapper -->
+			</div> <!-- End swiper-container -->
+
+			<!-- Search Overlays -->
+			<!-- Community College Search -->
+			<div class="search-overlay" id="search-overlay-cc" onclick="closeSearchIfOutside(event, 'cc')">
+				<div class="search-modal" onclick="event.stopPropagation()">
+					<div class="search-header">
+						<h3>Search Community Colleges</h3>
+						<button class="close-search" onclick="closeSearch('cc')">×</button>
+					</div>
+					<div class="search-input-container">
+						<input type="text" class="search-input" id="search-input-cc" placeholder="Type to search..." oninput="filterItems('cc')">
+					</div>
+					<div class="search-results" id="search-results-cc"></div>
+				</div>
 			</div>
 
-			<div class="message-input">
-				<textarea
-					id="user-input"
-					placeholder="Type your message here..."
-					rows="1"
-					autofocus
-				></textarea>
-				<button id="send-button">Send</button>
+			<!-- Schools Search -->
+			<div class="search-overlay" id="search-overlay-schools" onclick="closeSearchIfOutside(event, 'schools')">
+				<div class="search-modal" onclick="event.stopPropagation()">
+					<div class="search-header">
+						<h3>Search Universities</h3>
+						<button class="close-search" onclick="closeSearch('schools')">×</button>
+					</div>
+					<div class="search-input-container">
+						<input type="text" class="search-input" id="search-input-schools" placeholder="Type to search..." oninput="filterItems('schools')">
+					</div>
+					<div class="search-results" id="search-results-schools"></div>
+				</div>
 			</div>
-		</div>
 
-		<footer>
-			<p>Cloudflare Workers AI Chat Template &copy; 2025</p>
-		</footer>
+			<!-- Major Search -->
+			<div class="search-overlay" id="search-overlay-major" onclick="closeSearchIfOutside(event, 'major')">
+				<div class="search-modal" onclick="event.stopPropagation()">
+					<div class="search-header">
+						<h3>Search Majors</h3>
+						<button class="close-search" onclick="closeSearch('major')">×</button>
+					</div>
+					<div class="search-input-container">
+						<input type="text" class="search-input" id="search-input-major" placeholder="Type to search..." oninput="filterItems('major')">
+					</div>
+					<div class="search-results" id="search-results-major"></div>
+				</div>
+			</div>
 
-		<!-- Chat app script -->
-		<script src="chat.js"></script>
+		</div> <!-- End container -->
+
+		<!-- Swiper.js Library -->
+		<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+		<script>
+			// Data
+			const allCCs = [
+				'Southwestern College',
+				'Cuyamaca College',
+				'MiraCosta College',
+				'San Diego Miramar College',
+				'San Diego Mesa College',
+				'Palomar College',
+				'Grossmont College',
+				'Imperial Valley College'
+			];
+
+			const allSchools = [
+				'UC San Diego (UCSD)',
+				'San Diego State University (SDSU)',
+				'CSU Long Beach',
+				'UC Berkeley',
+				'UCLA',
+				'UC Irvine',
+				'UC Davis',
+				'UC Santa Barbara',
+				'CSU San Marcos',
+				'CSU Fullerton'
+			];
+
+			const allMajors = [
+				'Computer Science',
+				'Business Administration',
+				'Psychology',
+				'Engineering',
+				'Biology',
+				'Nursing',
+				'Communications',
+				'Political Science',
+				'Mathematics',
+				'Physics'
+			];
+
+			const selections = {
+				cc: '',
+				schools: [],
+				major: ''
+			};
+
+			let swiper;
+			let currentSlide = 0;
+
+			// Initialize Swiper with cards effect
+			document.addEventListener('DOMContentLoaded', function() {
+				swiper = new Swiper('#card-swiper', {
+					effect: 'cards',
+					grabCursor: false,
+					allowTouchMove: false,  // Disable swiping, we control navigation
+					cardsEffect: {
+						perSlideOffset: 8,
+						perSlideRotate: 0,
+						rotate: false,
+						slideShadows: false,
+					},
+					speed: 600,
+					on: {
+						slideChange: function() {
+							currentSlide = this.activeIndex;
+							updateProgress();
+						}
+					}
+				});
+
+				updateProgress();
+
+				// Initialize custom cursor
+				initCustomCursor();
+			});
+
+			// Custom Cursor Implementation
+			function initCustomCursor() {
+				const cursorDot = document.querySelector('.cursor-dot');
+				const cursorOutline = document.querySelector('.cursor-outline');
+				
+				let mouseX = 0, mouseY = 0;
+				let outlineX = 0, outlineY = 0;
+
+				// Track mouse position
+				document.addEventListener('mousemove', (e) => {
+					mouseX = e.clientX;
+					mouseY = e.clientY;
+					
+					// Update dot position immediately
+					cursorDot.style.left = mouseX + 'px';
+					cursorDot.style.top = mouseY + 'px';
+				});
+
+				// Smooth follow for outline
+				function animateOutline() {
+					// Smooth interpolation - higher value = less lag (0.5 = very close follow)
+					outlineX += (mouseX - outlineX) * 0.5;
+					outlineY += (mouseY - outlineY) * 0.5;
+					
+					cursorOutline.style.left = outlineX + 'px';
+					cursorOutline.style.top = outlineY + 'px';
+					
+					requestAnimationFrame(animateOutline);
+				}
+				animateOutline();
+
+				// Hover effect on interactive elements
+				const interactiveElements = document.querySelectorAll(
+					'button, a, .option-button, .checkbox-option, .search-icon, .back-button, input[type="checkbox"]'
+				);
+
+				interactiveElements.forEach(el => {
+					el.addEventListener('mouseenter', () => {
+						cursorOutline.classList.add('hover');
+					});
+					
+					el.addEventListener('mouseleave', () => {
+						cursorOutline.classList.remove('hover');
+					});
+				});
+
+				// Click effect
+				document.addEventListener('mousedown', () => {
+					cursorDot.classList.add('click');
+				});
+
+				document.addEventListener('mouseup', () => {
+					cursorDot.classList.remove('click');
+				});
+
+				// Ripple effect on click
+				document.addEventListener('click', (e) => {
+					createRipple(e.clientX, e.clientY);
+				});
+			}
+
+			// Create ripple effect
+			function createRipple(x, y) {
+				const ripple = document.createElement('div');
+				ripple.className = 'ripple';
+				ripple.style.left = x + 'px';
+				ripple.style.top = y + 'px';
+				
+				document.body.appendChild(ripple);
+				
+				// Remove ripple after animation
+				setTimeout(() => {
+					ripple.remove();
+				}, 600);
+			}
+
+			// Progress bar update
+			function updateProgress() {
+				for (let i = 1; i <= 4; i++) {
+					const segment = document.getElementById(`segment-${i}`);
+					const label = document.getElementById(`label-${i}`);
+					
+					if (i < currentSlide + 1) {
+						segment.classList.add('completed');
+						segment.classList.remove('active');
+						label.classList.add('completed');
+						label.classList.remove('active');
+					} else if (i === currentSlide + 1) {
+						segment.classList.add('active');
+						segment.classList.remove('completed');
+						label.classList.add('active');
+						label.classList.remove('completed');
+					} else {
+						segment.classList.remove('active', 'completed');
+						label.classList.remove('active', 'completed');
+					}
+				}
+			}
+
+			// Navigation functions
+			function goNext() {
+				if (swiper && currentSlide < 3) {
+					swiper.slideNext();
+				}
+			}
+
+			function goBack() {
+				if (swiper && currentSlide > 0) {
+					swiper.slidePrev();
+				}
+			}
+
+			// Community College Selection
+			function selectCC(college, element) {
+				document.querySelectorAll('#cc-list .option-button').forEach(btn => {
+					btn.classList.remove('selected');
+				});
+				
+				element.classList.add('selected');
+				selections.cc = college;
+				
+				setTimeout(() => {
+					goNext();
+				}, 400);
+			}
+
+			// School Selection (checkboxes)
+			function toggleSchool(school, element) {
+				const checkbox = element.querySelector('input[type="checkbox"]');
+				checkbox.checked = !checkbox.checked;
+				
+				if (checkbox.checked) {
+					element.classList.add('checked');
+					if (!selections.schools.includes(school)) {
+						selections.schools.push(school);
+					}
+				} else {
+					element.classList.remove('checked');
+					selections.schools = selections.schools.filter(s => s !== school);
+				}
+
+				const continueBtn = document.getElementById('continue-container-2');
+				continueBtn.style.display = selections.schools.length > 0 ? 'block' : 'none';
+			}
+
+			function proceedToMajor() {
+				if (selections.schools.length > 0) {
+					goNext();
+				}
+			}
+
+			// Major Selection
+			function selectMajor(major, element) {
+				document.querySelectorAll('#major-list .option-button').forEach(btn => {
+					btn.classList.remove('selected');
+				});
+				
+				element.classList.add('selected');
+				selections.major = major;
+				
+				if (selections.cc && selections.schools.length > 0 && selections.major) {
+					document.getElementById('selected-cc').textContent = selections.cc;
+					document.getElementById('selected-schools').textContent = selections.schools.join(', ');
+					document.getElementById('selected-major').textContent = selections.major;
+					
+					setTimeout(() => {
+						goNext();
+					}, 400);
+				}
+			}
+
+			function continueToNext() {
+				alert('Continue to course selection! (Next phase of development)');
+				console.log('User selections:', selections);
+			}
+
+			// Search functionality
+			function openSearch(type) {
+				const overlay = document.getElementById(`search-overlay-${type}`);
+				overlay.classList.add('active');
+				
+				let data;
+				if (type === 'cc') data = allCCs;
+				else if (type === 'schools') data = allSchools;
+				else if (type === 'major') data = allMajors;
+				
+				displaySearchResults(type, data);
+				
+				setTimeout(() => {
+					document.getElementById(`search-input-${type}`).focus();
+				}, 100);
+			}
+
+			function closeSearch(type) {
+				const overlay = document.getElementById(`search-overlay-${type}`);
+				overlay.classList.remove('active');
+				document.getElementById(`search-input-${type}`).value = '';
+			}
+
+			function closeSearchIfOutside(event, type) {
+				if (event.target.id === `search-overlay-${type}`) {
+					closeSearch(type);
+				}
+			}
+
+			function filterItems(type) {
+				const searchTerm = document.getElementById(`search-input-${type}`).value.toLowerCase();
+				let data;
+				if (type === 'cc') data = allCCs;
+				else if (type === 'schools') data = allSchools;
+				else if (type === 'major') data = allMajors;
+				
+				const filtered = data.filter(item => 
+					item.toLowerCase().includes(searchTerm)
+				);
+				displaySearchResults(type, filtered);
+			}
+
+			function displaySearchResults(type, items) {
+				const resultsContainer = document.getElementById(`search-results-${type}`);
+				
+				if (items.length === 0) {
+					resultsContainer.innerHTML = '<p style="text-align: center; color: #6b6857; padding: 2rem;">No results found</p>';
+					return;
+				}
+				
+				if (type === 'schools') {
+					// Checkboxes for schools
+					resultsContainer.innerHTML = items.map(item => {
+						const isChecked = selections.schools.includes(item);
+						return `
+							<label class="checkbox-option ${isChecked ? 'checked' : ''}" onclick="toggleSchoolFromSearch('${item}', this)">
+								<input type="checkbox" ${isChecked ? 'checked' : ''} onchange="event.stopPropagation()">
+								<span>${item}</span>
+							</label>
+						`;
+					}).join('');
+				} else {
+					// Regular buttons for CC and Major
+					resultsContainer.innerHTML = items.map(item => {
+						const isSelected = type === 'cc' ? selections.cc === item : selections.major === item;
+						return `
+							<button class="option-button ${isSelected ? 'selected' : ''}" onclick="selectFromSearch('${type}', '${item}')">
+								${item}
+							</button>
+						`;
+					}).join('');
+				}
+			}
+
+			function selectFromSearch(type, item) {
+				if (type === 'cc') {
+					// Update main list
+					document.querySelectorAll('#cc-list .option-button').forEach(btn => {
+						btn.classList.remove('selected');
+						if (btn.textContent.trim() === item) {
+							btn.classList.add('selected');
+						}
+					});
+					selections.cc = item;
+					closeSearch('cc');
+					setTimeout(() => goNext(), 200);
+				} else if (type === 'major') {
+					document.querySelectorAll('#major-list .option-button').forEach(btn => {
+						btn.classList.remove('selected');
+						if (btn.textContent.trim() === item) {
+							btn.classList.add('selected');
+						}
+					});
+					selections.major = item;
+					closeSearch('major');
+					if (selections.cc && selections.schools.length > 0 && selections.major) {
+						document.getElementById('selected-cc').textContent = selections.cc;
+						document.getElementById('selected-schools').textContent = selections.schools.join(', ');
+						document.getElementById('selected-major').textContent = selections.major;
+						setTimeout(() => goNext(), 400);
+					}
+				}
+			}
+
+			function toggleSchoolFromSearch(school, element) {
+				const checkbox = element.querySelector('input[type="checkbox"]');
+				checkbox.checked = !checkbox.checked;
+				
+				if (checkbox.checked) {
+					element.classList.add('checked');
+					if (!selections.schools.includes(school)) {
+						selections.schools.push(school);
+					}
+				} else {
+					element.classList.remove('checked');
+					selections.schools = selections.schools.filter(s => s !== school);
+				}
+
+				updateMainListCheckboxes();
+				
+				const continueBtn = document.getElementById('continue-container-2');
+				continueBtn.style.display = selections.schools.length > 0 ? 'block' : 'none';
+			}
+
+			function updateMainListCheckboxes() {
+				const mainList = document.getElementById('school-list');
+				const checkboxOptions = mainList.querySelectorAll('.checkbox-option');
+				
+				checkboxOptions.forEach(option => {
+					const schoolName = option.querySelector('span').textContent;
+					const checkbox = option.querySelector('input[type="checkbox"]');
+					
+					if (selections.schools.includes(schoolName)) {
+						checkbox.checked = true;
+						option.classList.add('checked');
+					} else {
+						checkbox.checked = false;
+						option.classList.remove('checked');
+					}
+				});
+			}
+		</script>
 	</body>
 </html>
