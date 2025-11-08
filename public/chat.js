@@ -6,9 +6,8 @@
 
 // DOM elements
 const chatMessages = document.getElementById("chat-messages");
-const userInput = document.getElementById("user-input");
-const sendButton = document.getElementById("send-button");
-const typingIndicator = document.getElementById("typing-indicator");
+const userInput = document.getElementById("chat-input");
+const sendButton = document.getElementById("chat-send-btn");
 
 // Chat state
 let chatHistory = [
@@ -58,8 +57,7 @@ async function sendMessage() {
 	userInput.value = "";
 	userInput.style.height = "auto";
 
-	// Show typing indicator
-	typingIndicator.classList.add("visible");
+
 
 	// Add message to history
 	chatHistory.push({ role: "user", content: message });
@@ -67,7 +65,7 @@ async function sendMessage() {
 	try {
 		// Create new assistant response element
 		const assistantMessageEl = document.createElement("div");
-		assistantMessageEl.className = "message assistant-message";
+		assistantMessageEl.className = "chat-message assistant";
 		assistantMessageEl.innerHTML = "<p></p>";
 		chatMessages.appendChild(assistantMessageEl);
 
@@ -133,9 +131,6 @@ async function sendMessage() {
 			"Sorry, there was an error processing your request.",
 		);
 	} finally {
-		// Hide typing indicator
-		typingIndicator.classList.remove("visible");
-
 		// Re-enable input
 		isProcessing = false;
 		userInput.disabled = false;
@@ -149,7 +144,7 @@ async function sendMessage() {
  */
 function addMessageToChat(role, content) {
 	const messageEl = document.createElement("div");
-	messageEl.className = `message ${role}-message`;
+	messageEl.className = `chat-message ${role}`;
 	messageEl.innerHTML = `<p>${content}</p>`;
 	chatMessages.appendChild(messageEl);
 

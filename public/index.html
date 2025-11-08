@@ -11,6 +11,9 @@
 		<!-- Swiper.js CSS -->
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 		
+		<!-- Markdown Library -->
+		<script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+		
 		<style>
 			* {
 				box-sizing: border-box;
@@ -338,6 +341,74 @@
 				background: linear-gradient(135deg, #7a9b6c, #8fad7d);
 				color: white;
 				align-self: flex-end;
+			}
+
+			/* Markdown Styles */
+			.chat-message h1, .chat-message h2, .chat-message h3, .chat-message h4 {
+				margin: 0.75rem 0 0.5rem 0;
+				font-weight: 600;
+				line-height: 1.3;
+			}
+
+			.chat-message h1 { font-size: 1.2rem; }
+			.chat-message h2 { font-size: 1.1rem; }
+			.chat-message h3 { font-size: 1rem; }
+
+			.chat-message ul, .chat-message ol {
+				margin: 0.5rem 0;
+				padding-left: 1.5rem;
+			}
+
+			.chat-message li {
+				margin: 0.25rem 0;
+			}
+
+			.chat-message code {
+				background: rgba(0, 0, 0, 0.1);
+				padding: 0.2rem 0.4rem;
+				border-radius: 3px;
+				font-family: 'Courier New', monospace;
+				font-size: 0.9em;
+			}
+
+			.chat-message pre {
+				background: rgba(0, 0, 0, 0.08);
+				padding: 1rem;
+				border-radius: 8px;
+				overflow-x: auto;
+				margin: 0.5rem 0;
+				font-family: 'Courier New', monospace;
+				font-size: 0.85rem;
+				line-height: 1.4;
+			}
+
+			.chat-message pre code {
+				background: none;
+				padding: 0;
+				border-radius: 0;
+				font-size: 1em;
+			}
+
+			.chat-message a {
+				color: #7a9b6c;
+				text-decoration: underline;
+				cursor: pointer;
+			}
+
+			.chat-message blockquote {
+				border-left: 3px solid rgba(122, 155, 108, 0.3);
+				margin: 0.5rem 0;
+				padding-left: 1rem;
+				color: rgba(61, 61, 47, 0.8);
+				font-style: italic;
+			}
+
+			.chat-message strong {
+				font-weight: 600;
+			}
+
+			.chat-message em {
+				font-style: italic;
 			}
 
 			/* Quick Action Buttons */
@@ -1678,7 +1749,7 @@
 		const quickActionButtons = document.querySelectorAll('.quick-action-btn');
 
 		// Add welcome message
-		addMessage('assistant', "Hi! I'm here to help with your transfer planning. Ask me anything!");
+		addMessage('assistant', "Welcome to BetterTransfer! I'm here to help you navigate your path from community college to university. Ask me about course requirements, transfer deadlines, GPA requirements, or school selection. Let's make your transfer journey smooth! 🎓");
 
 		// Toggle chat
 		chatToggle.addEventListener('click', () => {
@@ -1704,14 +1775,8 @@
 		// Quick action buttons
 		quickActionButtons.forEach(btn => {
 			btn.addEventListener('click', () => {
-				const message = btn.textContent;
-				addMessage('user', message);
-				chatInput.value = '';
-				
-				// Simulate response (placeholder)
-				setTimeout(() => {
-					addMessage('assistant', "I'm a UI placeholder right now! Backend functionality coming soon. 🌱");
-				}, 500);
+				chatInput.value = btn.textContent.trim();
+				sendMessage();
 			});
 		});
 	}
@@ -1734,7 +1799,7 @@
 		}
 	}
 
-	function sendMessage() {
+	async function sendMessage() {
 		const chatInput = document.getElementById('chat-input');
 		const message = chatInput.value.trim();
 		
@@ -1743,17 +1808,81 @@
 		addMessage('user', message);
 		chatInput.value = '';
 		
-		// Simulate response (placeholder)
-		setTimeout(() => {
-			addMessage('assistant', "I'm a UI placeholder right now! Backend functionality coming soon. 🌱");
-		}, 500);
+		try {
+			// Build message array for API
+			const messages = chatState.messages.map(msg => ({
+				role: msg.type,
+				content: msg.text
+			}));
+			messages.push({ role: 'user', content: message });
+			
+			// Call backend API with streaming
+			const response = await fetch('/api/chat', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ messages })
+			});
+			
+			if (!response.ok) throw new Error('API request failed');
+			
+			// Handle streaming response
+			const reader = response.body.getReader();
+			const decoder = new TextDecoder();
+			let assistantMessage = '';
+			let messageElement = null;
+			
+			while (true) {
+				const { done, value } = await reader.read();
+				if (done) break;
+				
+				const chunk = decoder.decode(value, { stream: true });
+				const lines = chunk.split('\n').filter(line => line.trim());
+				
+				for (const line of lines) {
+					try {
+						const json = JSON.parse(line);
+						if (json.response) {
+							assistantMessage += json.response;
+							
+							if (!messageElement) {
+								messageElement = document.createElement('div');
+								messageElement.className = 'chat-message assistant';
+								document.getElementById('chat-messages').appendChild(messageElement);
+							}
+							if (window.marked) {
+								messageElement.innerHTML = marked.parse(assistantMessage);
+							} else {
+								messageElement.textContent = assistantMessage;
+							}
+							document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
+						}
+					} catch (e) {
+						// Skip non-JSON lines
+					}
+				}
+			}
+			
+			// Store message in state
+			if (assistantMessage) {
+				chatState.messages.push({ type: 'assistant', text: assistantMessage });
+			}
+		} catch (error) {
+			console.error('Chat error:', error);
+			addMessage('assistant', 'Sorry, there was an error. Please try again.');
+		}
 	}
 
 	function addMessage(type, text) {
 		const chatMessages = document.getElementById('chat-messages');
 		const messageDiv = document.createElement('div');
 		messageDiv.className = `chat-message ${type}`;
-		messageDiv.textContent = text;
+		
+		// Parse markdown for assistant messages
+		if (type === 'assistant' && window.marked) {
+			messageDiv.innerHTML = marked.parse(text);
+		} else {
+			messageDiv.textContent = text;
+		}
 		
 		chatMessages.appendChild(messageDiv);
 		chatMessages.scrollTop = chatMessages.scrollHeight;
