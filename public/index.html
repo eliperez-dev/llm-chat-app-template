@@ -424,11 +424,11 @@
 				cursor: not-allowed;
 			}
 
-			.header {
-				text-align: center;
-				margin-bottom: 2rem;
-				animation: fadeIn 0.6s ease-out;
-			}
+		.header {
+			text-align: center;
+			margin-bottom: 1.5rem;
+			animation: fadeIn 0.6s ease-out;
+		}
 
 			.header h1 {
 				font-size: 2.2rem;
@@ -444,13 +444,13 @@
 			}
 
 			/* Segmented Progress Bar */
-			.progress-container {
-				background: rgba(255, 255, 255, 0.6);
-				border-radius: 20px;
-				padding: 1.5rem 2rem;
-				margin-bottom: 3rem;
-				box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
-			}
+		.progress-container {
+			background: rgba(255, 255, 255, 0.6);
+			border-radius: 20px;
+			padding: 1.5rem 2rem;
+			margin-bottom: 1.5rem;
+			box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+		}
 
 			.progress-bars {
 				display: flex;
@@ -503,12 +503,12 @@
 				font-weight: 600;
 			}
 
-			/* Swiper Container for Stacked Cards */
-			.swiper-container {
-				width: 100%;
-				height: 550px;
-				position: relative;
-			}
+		/* Swiper Container for Stacked Cards */
+		.swiper-container {
+			width: 100%;
+			height: 520px;
+			position: relative;
+		}
 
 			.swiper-slide {
 				display: flex;
@@ -520,16 +520,18 @@
 				color: #fff;
 			}
 
-			/* Individual Card Styles with gradient backgrounds */
-			.card {
-				width: 100%;
-				background: linear-gradient(135deg, #e8e9ca 0%, #d5d9b8 100%);
-				border-radius: 30px;
-				padding: 3rem 2.5rem;
-				box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
-				min-height: 480px;
-				position: relative;
-			}
+		/* Individual Card Styles with gradient backgrounds */
+		.card {
+			width: 100%;
+			background: linear-gradient(135deg, #e8e9ca 0%, #d5d9b8 100%);
+			border-radius: 30px;
+			padding: 3rem 2.5rem;
+			box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+			height: 520px;
+			position: relative;
+			display: flex;
+			flex-direction: column;
+		}
 
 			.card-1 { background: linear-gradient(135deg, #e8e9ca 0%, #d5d9b8 100%); }
 			.card-2 { background: linear-gradient(135deg, #c9d6d9 0%, #b3c5c9 100%); }
@@ -802,26 +804,35 @@
 				font-weight: 600;
 			}
 
-			.continue-button {
-				background: linear-gradient(135deg, #7a9b6c, #8fad7d);
-				color: white;
-				border: none;
-				border-radius: 14px;
-				padding: 1.15rem;
-				font-size: 1rem;
-				font-weight: 600;
-				cursor: none;
-				transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-				font-family: 'Inter', sans-serif;
-				width: 100%;
-				margin-top: 2rem;
-				box-shadow: 0 6px 20px rgba(122, 155, 108, 0.3);
-			}
+		.continue-button {
+			background: linear-gradient(135deg, #7a9b6c, #8fad7d);
+			color: white;
+			border: none;
+			border-radius: 14px;
+			padding: 1.15rem;
+			font-size: 1rem;
+			font-weight: 600;
+			cursor: none;
+			transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+			font-family: 'Inter', sans-serif;
+			width: 100%;
+			margin-top: auto;
+			box-shadow: 0 6px 20px rgba(122, 155, 108, 0.3);
+		}
 
-			.continue-button:hover {
-				transform: translateY(-3px) scale(1.02);
-				box-shadow: 0 10px 30px rgba(122, 155, 108, 0.45);
-			}
+		.continue-button:hover:not(:disabled) {
+			transform: translateY(-3px) scale(1.02);
+			box-shadow: 0 10px 30px rgba(122, 155, 108, 0.45);
+		}
+
+		.continue-button:disabled {
+			background: linear-gradient(135deg, #c4c4b8, #d0d0c6);
+			color: #8a8a7a;
+			cursor: not-allowed !important;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+			opacity: 0.6;
+			pointer-events: none;
+		}
 
 			/* Animations */
 			@keyframes fadeIn {
@@ -907,10 +918,10 @@
 					font-size: 1.8rem;
 				}
 				
-				.card {
-					padding: 2rem 1.5rem;
-					min-height: 450px;
-				}
+			.card {
+				padding: 2rem 1.5rem;
+				height: 500px;
+			}
 
 				.search-container, .back-button {
 					top: 2rem;
@@ -1151,9 +1162,7 @@
 								</label>
 							</div>
 
-							<div id="continue-container-2" style="display: none;">
-								<button class="continue-button" onclick="proceedToMajor()">Continue →</button>
-							</div>
+						<button class="continue-button" id="continue-btn-2" onclick="proceedToMajor()" disabled>Continue →</button>
 						</div>
 					</div>
 
@@ -1483,8 +1492,8 @@
 					selections.schools = selections.schools.filter(s => s !== school);
 				}
 
-				const continueBtn = document.getElementById('continue-container-2');
-				continueBtn.style.display = selections.schools.length > 0 ? 'block' : 'none';
+			const continueBtn = document.getElementById('continue-btn-2');
+			continueBtn.disabled = selections.schools.length === 0;
 			}
 
 			function proceedToMajor() {
@@ -1638,8 +1647,8 @@
 
 				updateMainListCheckboxes();
 				
-				const continueBtn = document.getElementById('continue-container-2');
-				continueBtn.style.display = selections.schools.length > 0 ? 'block' : 'none';
+			const continueBtn = document.getElementById('continue-btn-2');
+			continueBtn.disabled = selections.schools.length === 0;
 			}
 
 			function updateMainListCheckboxes() {
