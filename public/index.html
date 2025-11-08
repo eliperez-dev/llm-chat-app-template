@@ -100,12 +100,12 @@
 				}
 			}
 
-			.container {
-				width: 100%;
-				max-width: 600px;
-				position: relative;
-				margin: 0 auto;
-			}
+		.container {
+			width: 100%;
+			max-width: 600px;
+			position: relative;
+			margin: 0 auto;
+		}
 
 			/* Landing Page Styles */
 		.landing-page {
@@ -259,7 +259,7 @@
 		justify-content: center;
 		align-items: flex-start;
 		min-height: 100vh;
-		padding-top: 3rem;
+		padding: 3rem 0 3rem 0;
 	}
 
 			.app-container.chat-open {
@@ -499,7 +499,7 @@
 
 	.header {
 		text-align: center;
-		margin-bottom: 1rem;
+				margin-bottom: 1rem;
 		animation: fadeIn 0.6s ease-out;
 	}
 
@@ -579,8 +579,9 @@
 		/* Swiper Container for Stacked Cards */
 		.swiper-container {
 			width: 100%;
-			height: 520px;
 			position: relative;
+			transition: height 0.3s ease;
+			overflow: visible;
 		}
 
 			.swiper-slide {
@@ -591,6 +592,7 @@
 				font-size: 22px;
 				font-weight: bold;
 				color: #fff;
+				overflow: visible;
 			}
 
 	/* Individual Card Styles with gradient backgrounds */
@@ -598,12 +600,13 @@
 		width: 100%;
 		background: linear-gradient(135deg, #e8e9ca 0%, #d5d9b8 100%);
 		border-radius: 30px;
-		padding: 2.5rem 2.5rem;
+		padding: 2rem 2.5rem;
 		box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
-		height: 520px;
 		position: relative;
 		display: flex;
 		flex-direction: column;
+		transition: height 0.3s ease;
+		overflow: visible;
 	}
 
 			.card-1 { background: linear-gradient(135deg, #e8e9ca 0%, #d5d9b8 100%); }
@@ -619,21 +622,196 @@
 				text-align: center;
 			}
 
-		.section-subtitle {
-			font-size: 0.9rem;
-			color: #6b6857;
-			margin-bottom: 1.5rem;
-			text-align: center;
-			font-weight: 400;
-		}
+	.section-subtitle {
+		font-size: 0.9rem;
+		color: #6b6857;
+		margin-bottom: 1.5rem;
+		text-align: center;
+		font-weight: 400;
+	}
 
-		/* Button Grid */
-		.button-grid {
-			display: grid;
-			gap: 0.6rem;
-			flex: 1;
-			align-content: flex-start;
+	/* Search Box Container */
+	.search-box-container {
+		position: relative;
+		margin-bottom: 0.75rem;
+	}
+
+	.search-input-main {
+		width: 100%;
+		padding: 1rem 3rem 1rem 1.25rem;
+		border: 2px solid rgba(122, 155, 108, 0.25);
+		border-radius: 14px;
+		font-size: 1rem;
+		font-family: 'Inter', sans-serif;
+		background: rgba(255, 255, 255, 0.8);
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+	}
+
+	.search-input-main:focus {
+		outline: none;
+		border-color: #7a9b6c;
+		background: white;
+		box-shadow: 0 4px 16px rgba(122, 155, 108, 0.15);
+	}
+
+	.search-input-main::placeholder {
+		color: #a09a86;
+	}
+
+	.search-icon-inline {
+		position: absolute;
+		right: 1rem;
+		top: 50%;
+		transform: translateY(-50%);
+		width: 20px;
+		height: 20px;
+		stroke: #8a8572;
+		stroke-width: 2;
+		pointer-events: none;
+	}
+
+	/* Search Results Container */
+	.search-results-container {
+		overflow-y: auto;
+		display: flex;
+		flex-direction: column;
+		gap: 0.6rem;
+		max-height: 0;
+		opacity: 0;
+		transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+					opacity 0.3s ease;
+		scrollbar-width: thin;
+		scrollbar-color: rgba(122, 155, 108, 0.3) transparent;
+	}
+
+	.search-results-container::-webkit-scrollbar {
+		width: 8px;
+	}
+
+	.search-results-container::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	.search-results-container::-webkit-scrollbar-thumb {
+		background: rgba(122, 155, 108, 0.3);
+		border-radius: 10px;
+		transition: background 0.2s ease;
+	}
+
+	.search-results-container::-webkit-scrollbar-thumb:hover {
+		background: rgba(122, 155, 108, 0.5);
+	}
+
+	.search-results-container:not(:empty) {
+		max-height: 240px;
+		opacity: 1;
+		margin-bottom: 1rem;
+	}
+
+	.search-result-item {
+		background: rgba(255, 255, 255, 0.7);
+		border: 2px solid rgba(122, 155, 108, 0.2);
+		border-radius: 14px;
+		padding: 0.95rem 1.25rem;
+		font-size: 0.95rem;
+		font-weight: 500;
+		color: #3d3d2f;
+		cursor: none;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		font-family: 'Inter', sans-serif;
+		text-align: left;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+		animation: fadeInUp 0.2s ease-out;
+		flex-shrink: 0;
+	}
+
+	@keyframes fadeInUp {
+		from {
+			opacity: 0;
+			transform: translateY(10px);
 		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.search-result-item:hover {
+		background: rgba(255, 255, 255, 0.95);
+		transform: translateY(-2px);
+		box-shadow: 0 6px 18px rgba(122, 155, 108, 0.12);
+		border-color: #7a9b6c;
+	}
+
+	.search-result-item.selected {
+		background: rgba(122, 155, 108, 0.15);
+		border-color: #7a9b6c;
+		font-weight: 600;
+	}
+
+	.no-results {
+		text-align: center;
+		padding: 2rem;
+		color: #8a8572;
+		font-size: 0.9rem;
+				font-style: italic;
+	}
+
+	.search-helper-text {
+		text-align: center;
+		color: #a09a86;
+		font-size: 0.9rem;
+		padding: 1rem 2rem;
+		font-style: italic;
+	}
+
+	/* Selected Schools Display */
+	.selected-schools {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin-bottom: 0;
+		min-height: 0;
+		transition: margin-bottom 0.3s ease;
+	}
+
+	.selected-schools:not(:empty) {
+		margin-bottom: 0.75rem;
+	}
+
+	.selected-school-tag {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		background: linear-gradient(135deg, #7a9b6c, #8fad7d);
+		color: white;
+		padding: 0.5rem 0.75rem;
+		border-radius: 10px;
+		font-size: 0.85rem;
+		font-weight: 500;
+		animation: fadeInUp 0.2s ease-out;
+	}
+
+	.selected-school-tag .remove-tag {
+		cursor: none;
+		font-size: 1.1rem;
+		font-weight: bold;
+		opacity: 0.8;
+		transition: opacity 0.2s;
+	}
+
+	.selected-school-tag .remove-tag:hover {
+		opacity: 1;
+	}
+
+	/* Button Grid */
+	.button-grid {
+		display: grid;
+		gap: 0.6rem;
+		flex: 1;
+		align-content: flex-start;
+	}
 
 		.option-button {
 			background: rgba(255, 255, 255, 0.7);
@@ -890,7 +1068,7 @@
 		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 		font-family: 'Inter', sans-serif;
 		width: 100%;
-		margin-top: 1rem;
+		margin-top: auto;
 		flex-shrink: 0;
 		box-shadow: 0 6px 20px rgba(122, 155, 108, 0.3);
 	}
@@ -957,12 +1135,12 @@
 				color: #6b6857;
 			}
 
-			/* Responsive */
-			@media (max-width: 768px) {
-				body {
-					padding: 1rem;
-					cursor: auto !important; /* Show default cursor on mobile */
-				}
+		/* Responsive */
+		@media (max-width: 768px) {
+			body {
+				padding: 1rem 1rem 2rem 1rem;
+				cursor: auto !important; /* Show default cursor on mobile */
+			}
 
 				/* Hide custom cursor on mobile */
 				.cursor-dot, .cursor-outline {
@@ -994,8 +1172,8 @@
 				}
 				
 		.card {
-			padding: 2rem 1.5rem 1.75rem;
-			height: 500px;
+			padding: 1.75rem 1.5rem 1.5rem;
+			overflow: visible;
 		}
 
 				.search-container, .back-button {
@@ -1023,7 +1201,8 @@
 				}
 
 			.swiper-container {
-				height: 500px;
+				/* Height will be set dynamically by JavaScript */
+				margin-bottom: 2rem;
 			}
 
 			/* Mobile Chat Styles */
@@ -1106,12 +1285,12 @@
 		<div class="chat-header">
 			<h3>Transfer Assistant</h3>
 			<button class="chat-close" id="chat-close">×</button>
-		</div>
+				</div>
 
 		<!-- Chat Messages -->
 		<div class="chat-messages" id="chat-messages">
 			<!-- Messages will be added dynamically -->
-		</div>
+			</div>
 
 		<!-- Quick Actions -->
 		<div class="quick-actions">
@@ -1120,14 +1299,14 @@
 			<button class="quick-action-btn">GPA requirements?</button>
 			<button class="quick-action-btn">Transfer deadlines?</button>
 			<button class="quick-action-btn">School comparison?</button>
-		</div>
+			</div>
 
 		<!-- Chat Input -->
 		<div class="chat-input-container">
 			<textarea class="chat-input" id="chat-input" placeholder="Ask anything..." rows="1"></textarea>
 			<button class="chat-send-btn" id="chat-send-btn">Send</button>
+			</div>
 		</div>
-	</div>
 
 	<!-- Landing Page -->
 		<div class="landing-page" id="landing-page">
@@ -1168,109 +1347,92 @@
 			<div class="swiper-container" id="card-swiper">
 				<div class="swiper-wrapper">
 					
-					<!-- Card 1: Community College -->
-					<div class="swiper-slide">
-						<div class="card card-1">
-							<!-- Search Icon -->
-							<div class="search-container">
-								<div class="search-icon" onclick="openSearch('cc')">
-									<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-									</svg>
-								</div>
-							</div>
-
-							<h2 class="section-title">Select Your Community College</h2>
-							<p class="section-subtitle">Where are you currently enrolled?</p>
-							<div class="button-grid" id="cc-list">
-								<button class="option-button" onclick="selectCC('Southwestern College', this)">Southwestern College</button>
-								<button class="option-button" onclick="selectCC('Cuyamaca College', this)">Cuyamaca College</button>
-								<button class="option-button" onclick="selectCC('MiraCosta College', this)">MiraCosta College</button>
-								<button class="option-button" onclick="selectCC('San Diego Miramar College', this)">San Diego Miramar College</button>
-								<button class="option-button" onclick="selectCC('San Diego Mesa College', this)">San Diego Mesa College</button>
-							</div>
+				<!-- Card 1: Community College -->
+				<div class="swiper-slide">
+					<div class="card card-1">
+						<h2 class="section-title">Select Your Community College</h2>
+						<p class="section-subtitle">Where are you currently enrolled?</p>
+						
+						<div class="search-box-container">
+							<input type="text" 
+								   class="search-input-main" 
+								   id="cc-search" 
+								   placeholder="Search for your college..." 
+								   oninput="filterColleges('cc')"
+								   autocomplete="off">
+							<svg class="search-icon-inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+							</svg>
 						</div>
+						
+						<div class="search-results-container" id="cc-results"></div>
+						
+						<button class="continue-button" id="continue-btn-1" onclick="proceedToSchools()" disabled>Continue →</button>
 					</div>
+				</div>
 
-					<!-- Card 2: Target Schools -->
-					<div class="swiper-slide">
-						<div class="card card-2">
-							<!-- Back Button -->
-							<div class="back-button" onclick="goBack()">
-								<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
-								</svg>
-							</div>
+				<!-- Card 2: Target Schools -->
+				<div class="swiper-slide">
+					<div class="card card-2">
+						<!-- Back Button -->
+						<div class="back-button" onclick="goBack()">
+							<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+							</svg>
+						</div>
 
-							<!-- Search Icon -->
-							<div class="search-container">
-								<div class="search-icon" onclick="openSearch('schools')">
-									<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-									</svg>
-								</div>
-							</div>
-
-							<h2 class="section-title">Choose Your Target Universities</h2>
-							<p class="section-subtitle">Select one or more schools (you can pick multiple)</p>
-							
-							<div id="school-list">
-								<label class="checkbox-option" onclick="toggleSchool('UC San Diego (UCSD)', this)">
-									<input type="checkbox" onchange="event.stopPropagation()">
-									<span>UC San Diego (UCSD)</span>
-								</label>
-								<label class="checkbox-option" onclick="toggleSchool('San Diego State University (SDSU)', this)">
-									<input type="checkbox" onchange="event.stopPropagation()">
-									<span>San Diego State University (SDSU)</span>
-								</label>
-								<label class="checkbox-option" onclick="toggleSchool('CSU Long Beach', this)">
-									<input type="checkbox" onchange="event.stopPropagation()">
-									<span>CSU Long Beach</span>
-								</label>
-								<label class="checkbox-option" onclick="toggleSchool('UC Berkeley', this)">
-									<input type="checkbox" onchange="event.stopPropagation()">
-									<span>UC Berkeley</span>
-								</label>
-								<label class="checkbox-option" onclick="toggleSchool('UCLA', this)">
-									<input type="checkbox" onchange="event.stopPropagation()">
-									<span>UCLA</span>
-								</label>
-							</div>
-
+						<h2 class="section-title">Choose Your Target Universities</h2>
+						<p class="section-subtitle">Select one or more schools (you can pick multiple)</p>
+						
+						<div class="search-box-container">
+							<input type="text" 
+								   class="search-input-main" 
+								   id="schools-search" 
+								   placeholder="Search for universities..." 
+								   oninput="filterColleges('schools')"
+								   autocomplete="off">
+							<svg class="search-icon-inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+							</svg>
+						</div>
+						
+						<div class="selected-schools" id="selected-schools"></div>
+						<div class="search-results-container" id="schools-results"></div>
+						
 						<button class="continue-button" id="continue-btn-2" onclick="proceedToMajor()" disabled>Continue →</button>
-						</div>
 					</div>
+				</div>
 
-					<!-- Card 3: Major -->
-					<div class="swiper-slide">
-						<div class="card card-3">
-							<!-- Back Button -->
-							<div class="back-button" onclick="goBack()">
-								<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
-								</svg>
-							</div>
-
-							<!-- Search Icon -->
-							<div class="search-container">
-								<div class="search-icon" onclick="openSearch('major')">
-									<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-									</svg>
-								</div>
-							</div>
-
-							<h2 class="section-title">Select Your Major</h2>
-							<p class="section-subtitle">What do you want to study?</p>
-							<div class="button-grid" id="major-list">
-								<button class="option-button" onclick="selectMajor('Computer Science', this)">Computer Science</button>
-								<button class="option-button" onclick="selectMajor('Business Administration', this)">Business Administration</button>
-								<button class="option-button" onclick="selectMajor('Psychology', this)">Psychology</button>
-								<button class="option-button" onclick="selectMajor('Engineering', this)">Engineering</button>
-								<button class="option-button" onclick="selectMajor('Biology', this)">Biology</button>
-							</div>
+				<!-- Card 3: Major -->
+				<div class="swiper-slide">
+					<div class="card card-3">
+						<!-- Back Button -->
+						<div class="back-button" onclick="goBack()">
+							<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+							</svg>
 						</div>
+
+						<h2 class="section-title">Select Your Major</h2>
+						<p class="section-subtitle">What do you want to study?</p>
+						
+						<div class="search-box-container">
+							<input type="text" 
+								   class="search-input-main" 
+								   id="major-search" 
+								   placeholder="Search for your major..." 
+								   oninput="filterColleges('major')"
+								   autocomplete="off">
+							<svg class="search-icon-inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+							</svg>
+						</div>
+						
+						<div class="search-results-container" id="major-results"></div>
+						
+						<button class="continue-button" id="continue-btn-3" onclick="showSummary()" disabled>Continue →</button>
 					</div>
+				</div>
 
 					<!-- Card 4: Summary -->
 					<div class="swiper-slide">
@@ -1352,79 +1514,145 @@
 		<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
 	<script>
-			// Data
-			const allCCs = [
-				'Southwestern College',
-				'Cuyamaca College',
-				'MiraCosta College',
-				'San Diego Miramar College',
-				'San Diego Mesa College',
-				'Palomar College',
-				'Grossmont College',
-				'Imperial Valley College'
-			];
+		// Data
+		let allCCs = [];
+		let allSchools = [];
+		const allMajors = [
+			'Computer Science',
+			'Business Administration',
+			'Psychology',
+			'Engineering',
+			'Biology',
+			'Nursing',
+			'Communications',
+			'Political Science',
+			'Mathematics',
+			'Physics',
+			'Chemistry',
+			'Economics',
+			'History',
+			'English',
+			'Sociology'
+		];
 
-			const allSchools = [
-				'UC San Diego (UCSD)',
-				'San Diego State University (SDSU)',
-				'CSU Long Beach',
-				'UC Berkeley',
-				'UCLA',
-				'UC Irvine',
-				'UC Davis',
-				'UC Santa Barbara',
-				'CSU San Marcos',
-				'CSU Fullerton'
-			];
+		const selections = {
+			cc: '',
+			schools: [],
+			major: ''
+		};
 
-			const allMajors = [
-				'Computer Science',
-				'Business Administration',
-				'Psychology',
-				'Engineering',
-				'Biology',
-				'Nursing',
-				'Communications',
-				'Political Science',
-				'Mathematics',
-				'Physics'
-			];
-
-			const selections = {
-				cc: '',
-				schools: [],
-				major: ''
-			};
+	// Load colleges from JSON
+	async function loadColleges() {
+		try {
+			const response = await fetch('colleges.json');
+			const data = await response.json();
+			
+			// Combine both arrays and remove duplicates, then sort alphabetically
+			const allColleges = [...new Set([...data.from_institution, ...data.transfer_institution])].sort();
+			
+			// Use the combined list for both community colleges and target schools
+			allCCs = allColleges;
+			allSchools = allColleges;
+			
+			console.log('✅ Successfully loaded', allColleges.length, 'colleges');
+		} catch (error) {
+			console.error('❌ Error loading colleges:', error);
+			// Fallback data
+			allCCs = ['Southwestern College', 'San Diego Mesa College', 'MiraCosta College'];
+			allSchools = ['UC San Diego', 'San Diego State University', 'UC Berkeley'];
+		}
+	}
 
 			let swiper;
 			let currentSlide = 0;
 
-			// Initialize Swiper with cards effect
-			document.addEventListener('DOMContentLoaded', function() {
-				swiper = new Swiper('#card-swiper', {
-					effect: 'cards',
-					grabCursor: false,
-					allowTouchMove: false,  // Disable swiping, we control navigation
-					cardsEffect: {
-						perSlideOffset: 8,
-						perSlideRotate: 0,
-						rotate: false,
-						slideShadows: false,
-					},
-					speed: 600,
-					on: {
-						slideChange: function() {
-							currentSlide = this.activeIndex;
-							updateProgress();
-						}
+	// Sync all card heights to match the active card
+	function syncCardHeights() {
+		// Use requestAnimationFrame to ensure DOM is fully rendered
+		requestAnimationFrame(() => {
+			requestAnimationFrame(() => {
+				const activeSlide = document.querySelector('.swiper-slide-active');
+				if (!activeSlide) return;
+				
+				const activeCard = activeSlide.querySelector('.card');
+				if (!activeCard) return;
+				
+				// Temporarily remove height constraint to measure natural size
+				const allCards = document.querySelectorAll('.card');
+				allCards.forEach(card => {
+					card.style.height = 'auto';
+				});
+				
+				// Wait one more frame for layout to update
+				requestAnimationFrame(() => {
+					// Get the natural height of the active card's content
+					const naturalHeight = activeCard.scrollHeight;
+					
+					console.log('📏 Syncing card heights to:', naturalHeight + 'px');
+					
+					// Apply this exact height to ALL cards (forces them to be identical)
+					allCards.forEach(card => {
+						card.style.height = naturalHeight + 'px';
+					});
+					
+					// Also set the swiper container height
+					const swiperContainer = document.getElementById('card-swiper');
+					if (swiperContainer) {
+						swiperContainer.style.height = naturalHeight + 'px';
 					}
 				});
-
-				updateProgress();
-
-				// Initialize custom cursor
-				initCustomCursor();
 			});
+		});
+	}
+
+	// Initialize Swiper with cards effect
+	document.addEventListener('DOMContentLoaded', async function() {
+		// Load colleges data first
+		await loadColleges();
+
+		swiper = new Swiper('#card-swiper', {
+			effect: 'cards',
+			grabCursor: false,
+			allowTouchMove: false,  // Disable swiping, we control navigation
+			cardsEffect: {
+				perSlideOffset: 8,
+				perSlideRotate: 0,
+				rotate: false,
+				slideShadows: false,
+			},
+			speed: 600,
+			on: {
+				slideChange: function() {
+					currentSlide = this.activeIndex;
+					updateProgress();
+					// Sync heights after slide change (wait for swiper transition to complete)
+					setTimeout(syncCardHeights, 650);
+				}
+			}
+		});
+
+		updateProgress();
+		
+		// Initial height sync (wait for initial render)
+		setTimeout(syncCardHeights, 200);
+
+		// Set up MutationObserver to watch for content changes in search results
+		const searchResultsContainers = document.querySelectorAll('.search-results-container');
+		const observer = new MutationObserver(() => {
+			// Content changed, re-sync heights after a short delay
+			setTimeout(syncCardHeights, 350);
+		});
+		
+		searchResultsContainers.forEach(container => {
+			observer.observe(container, {
+				childList: true,
+				subtree: true
+			});
+		});
+
+		// Initialize custom cursor
+		initCustomCursor();
+	});
 
 			// Custom Cursor Implementation
 			function initCustomCursor() {
@@ -1458,9 +1686,9 @@
 				animateOutline();
 
 			// Hover effect on interactive elements
-			const interactiveElements = document.querySelectorAll(
-				'button, a, .option-button, .checkbox-option, .search-icon, .back-button, input[type="checkbox"], .chat-toggle-button, .chat-close, .chat-send-btn, .quick-action-btn, textarea'
-			);
+		const interactiveElements = document.querySelectorAll(
+			'button, a, .option-button, .checkbox-option, .search-icon, .back-button, input[type="checkbox"], .chat-toggle-button, .chat-close, .chat-send-btn, .quick-action-btn, textarea, .search-input-main, .search-result-item, .remove-tag'
+		);
 
 				interactiveElements.forEach(el => {
 					el.addEventListener('mouseenter', () => {
@@ -1525,224 +1753,178 @@
 				}
 			}
 
-			// Navigation functions
-			function goNext() {
-				if (swiper && currentSlide < 3) {
-					swiper.slideNext();
-				}
+		// Navigation functions
+		function goNext() {
+			if (swiper && currentSlide < 3) {
+				swiper.slideNext();
 			}
+		}
 
-			function goBack() {
-				if (swiper && currentSlide > 0) {
+		function goBack() {
+			if (swiper && currentSlide > 0) {
+				// Clear search results on current card for smooth transition
+				const currentCard = document.querySelector('.swiper-slide-active');
+				if (currentCard) {
+					const searchResults = currentCard.querySelector('.search-results-container');
+					if (searchResults) {
+						searchResults.innerHTML = '';
+					}
+				}
+				
+				// Wait for card to shrink before transitioning
+				setTimeout(() => {
 					swiper.slidePrev();
-				}
+				}, 350);
 			}
+		}
 
-			// Community College Selection
-			function selectCC(college, element) {
-				document.querySelectorAll('#cc-list .option-button').forEach(btn => {
-					btn.classList.remove('selected');
-				});
-				
-				element.classList.add('selected');
-				selections.cc = college;
-				
-				setTimeout(() => {
-					goNext();
-				}, 400);
-			} 
-
-			// School Selection (checkboxes)
-			function toggleSchool(school, element) {
-				const checkbox = element.querySelector('input[type="checkbox"]');
-				checkbox.checked = !checkbox.checked;
-				
-				if (checkbox.checked) {
-					element.classList.add('checked');
-					if (!selections.schools.includes(school)) {
-						selections.schools.push(school);
-					}
-				} else {
-					element.classList.remove('checked');
-					selections.schools = selections.schools.filter(s => s !== school);
-				}
-
-			const continueBtn = document.getElementById('continue-btn-2');
-			continueBtn.disabled = selections.schools.length === 0;
-			}
-
-			function proceedToMajor() {
-				if (selections.schools.length > 0) {
-					goNext();
-				}
-			}
-
-			// Major Selection
-			function selectMajor(major, element) {
-				document.querySelectorAll('#major-list .option-button').forEach(btn => {
-					btn.classList.remove('selected');
-				});
-				
-				element.classList.add('selected');
-				selections.major = major;
-				
-				if (selections.cc && selections.schools.length > 0 && selections.major) {
-					document.getElementById('selected-cc').textContent = selections.cc;
-					document.getElementById('selected-schools').textContent = selections.schools.join(', ');
-					document.getElementById('selected-major').textContent = selections.major;
-					
-					setTimeout(() => {
-						goNext();
-					}, 400);
-				}
-			}
-
-			function continueToNext() {
-				alert('Continue to course selection! (Next phase of development)');
-				console.log('User selections:', selections);
-			}
-
-			// Search functionality
-			function openSearch(type) {
-				const overlay = document.getElementById(`search-overlay-${type}`);
-				overlay.classList.add('active');
-				
-				let data;
-				if (type === 'cc') data = allCCs;
-				else if (type === 'schools') data = allSchools;
-				else if (type === 'major') data = allMajors;
-				
-				displaySearchResults(type, data);
-				
-				setTimeout(() => {
-					document.getElementById(`search-input-${type}`).focus();
-				}, 100);
-			}
-
-			function closeSearch(type) {
-				const overlay = document.getElementById(`search-overlay-${type}`);
-				overlay.classList.remove('active');
-				document.getElementById(`search-input-${type}`).value = '';
-			}
-
-			function closeSearchIfOutside(event, type) {
-				if (event.target.id === `search-overlay-${type}`) {
-					closeSearch(type);
-				}
-			}
-
-			function filterItems(type) {
-				const searchTerm = document.getElementById(`search-input-${type}`).value.toLowerCase();
-				let data;
-				if (type === 'cc') data = allCCs;
-				else if (type === 'schools') data = allSchools;
-				else if (type === 'major') data = allMajors;
-				
-				const filtered = data.filter(item => 
-					item.toLowerCase().includes(searchTerm)
-				);
-				displaySearchResults(type, filtered);
-			}
-
-			function displaySearchResults(type, items) {
-				const resultsContainer = document.getElementById(`search-results-${type}`);
-				
-				if (items.length === 0) {
-					resultsContainer.innerHTML = '<p style="text-align: center; color: #6b6857; padding: 2rem;">No results found</p>';
-					return;
-				}
-				
-				if (type === 'schools') {
-					// Checkboxes for schools
-					resultsContainer.innerHTML = items.map(item => {
-						const isChecked = selections.schools.includes(item);
-						return `
-							<label class="checkbox-option ${isChecked ? 'checked' : ''}" onclick="toggleSchoolFromSearch('${item}', this)">
-								<input type="checkbox" ${isChecked ? 'checked' : ''} onchange="event.stopPropagation()">
-								<span>${item}</span>
-							</label>
-						`;
-					}).join('');
-				} else {
-					// Regular buttons for CC and Major
-					resultsContainer.innerHTML = items.map(item => {
-						const isSelected = type === 'cc' ? selections.cc === item : selections.major === item;
-						return `
-							<button class="option-button ${isSelected ? 'selected' : ''}" onclick="selectFromSearch('${type}', '${item}')">
-								${item}
-							</button>
-						`;
-					}).join('');
-				}
-			}
-
-			function selectFromSearch(type, item) {
-				if (type === 'cc') {
-					// Update main list
-					document.querySelectorAll('#cc-list .option-button').forEach(btn => {
-						btn.classList.remove('selected');
-						if (btn.textContent.trim() === item) {
-							btn.classList.add('selected');
-						}
-					});
-					selections.cc = item;
-					closeSearch('cc');
-					setTimeout(() => goNext(), 200);
-				} else if (type === 'major') {
-					document.querySelectorAll('#major-list .option-button').forEach(btn => {
-						btn.classList.remove('selected');
-						if (btn.textContent.trim() === item) {
-							btn.classList.add('selected');
-						}
-					});
-					selections.major = item;
-					closeSearch('major');
-					if (selections.cc && selections.schools.length > 0 && selections.major) {
-						document.getElementById('selected-cc').textContent = selections.cc;
-						document.getElementById('selected-schools').textContent = selections.schools.join(', ');
-						document.getElementById('selected-major').textContent = selections.major;
-						setTimeout(() => goNext(), 400);
-					}
-				}
-			}
-
-			function toggleSchoolFromSearch(school, element) {
-				const checkbox = element.querySelector('input[type="checkbox"]');
-				checkbox.checked = !checkbox.checked;
-				
-				if (checkbox.checked) {
-					element.classList.add('checked');
-					if (!selections.schools.includes(school)) {
-						selections.schools.push(school);
-					}
-				} else {
-					element.classList.remove('checked');
-					selections.schools = selections.schools.filter(s => s !== school);
-				}
-
-				updateMainListCheckboxes();
-				
-			const continueBtn = document.getElementById('continue-btn-2');
-			continueBtn.disabled = selections.schools.length === 0;
-			}
-
-			function updateMainListCheckboxes() {
-				const mainList = document.getElementById('school-list');
-				const checkboxOptions = mainList.querySelectorAll('.checkbox-option');
-				
-				checkboxOptions.forEach(option => {
-					const schoolName = option.querySelector('span').textContent;
-					const checkbox = option.querySelector('input[type="checkbox"]');
-					
-					if (selections.schools.includes(schoolName)) {
-						checkbox.checked = true;
-						option.classList.add('checked');
-					} else {
-						checkbox.checked = false;
-						option.classList.remove('checked');
-					}
-		});
+	// Filter colleges based on search
+	function filterColleges(type) {
+		const searchInput = document.getElementById(`${type}-search`);
+		const resultsContainer = document.getElementById(`${type}-results`);
+		const searchTerm = searchInput.value.toLowerCase().trim();
+		
+		if (!searchTerm) {
+			resultsContainer.innerHTML = '';
+			// Sync heights when results are cleared (wait for transition)
+			setTimeout(syncCardHeights, 350);
+			return;
+		}
+		
+		let data;
+		if (type === 'cc') data = allCCs;
+		else if (type === 'schools') data = allSchools;
+		else if (type === 'major') data = allMajors;
+		
+		const filtered = data.filter(item => 
+			item.toLowerCase().includes(searchTerm)
+		).slice(0, 8); // Limit to 8 results
+		
+		if (filtered.length === 0) {
+			resultsContainer.innerHTML = '<div class="no-results">No matches found. Try a different search.</div>';
+		} else {
+			resultsContainer.innerHTML = filtered.map(item => {
+				const isSelected = type === 'cc' ? selections.cc === item : 
+								   type === 'schools' ? selections.schools.includes(item) :
+								   selections.major === item;
+				return `<div class="search-result-item ${isSelected ? 'selected' : ''}" 
+							 onclick="selectItem('${type}', '${item.replace(/'/g, "\\'")}')">
+							${item}
+						</div>`;
+			}).join('');
+		}
+		
+		console.log('🔍 Filtered results:', filtered.length, 'items');
+		
+		// Sync heights after results are displayed (wait for CSS transition to complete)
+		setTimeout(syncCardHeights, 400);
 	}
+
+		// Select item from search results
+		function selectItem(type, item) {
+			if (type === 'cc') {
+				selections.cc = item;
+				document.getElementById('cc-search').value = item;
+				document.getElementById('cc-results').innerHTML = '';
+				document.getElementById('continue-btn-1').disabled = false;
+			} else if (type === 'schools') {
+				if (selections.schools.includes(item)) {
+					// Remove if already selected
+					selections.schools = selections.schools.filter(s => s !== item);
+				} else {
+					// Add to selections
+					selections.schools.push(item);
+				}
+				updateSelectedSchoolsTags();
+				document.getElementById('continue-btn-2').disabled = selections.schools.length === 0;
+				// Re-render results to update selected state
+				filterColleges('schools');
+			} else if (type === 'major') {
+				selections.major = item;
+				document.getElementById('major-search').value = item;
+				document.getElementById('major-results').innerHTML = '';
+				document.getElementById('continue-btn-3').disabled = false;
+			}
+		}
+
+	// Update selected schools tags display
+	function updateSelectedSchoolsTags() {
+		const container = document.getElementById('selected-schools');
+		if (selections.schools.length === 0) {
+			container.innerHTML = '';
+			setTimeout(syncCardHeights, 50);
+			return;
+		}
+		
+		container.innerHTML = selections.schools.map(school => `
+			<div class="selected-school-tag">
+				${school}
+				<span class="remove-tag" onclick="removeSchool('${school.replace(/'/g, "\\'")}')">×</span>
+			</div>
+		`).join('');
+		
+		// Sync heights after tags are updated
+		setTimeout(syncCardHeights, 50);
+	}
+
+		// Remove a school from selections
+		function removeSchool(school) {
+			selections.schools = selections.schools.filter(s => s !== school);
+			updateSelectedSchoolsTags();
+			document.getElementById('continue-btn-2').disabled = selections.schools.length === 0;
+			// Re-render results if search is active
+			if (document.getElementById('schools-search').value) {
+				filterColleges('schools');
+			}
+		}
+
+	function proceedToSchools() {
+		if (selections.cc) {
+			// Clear search results first for smooth transition
+			const ccResults = document.getElementById('cc-results');
+			if (ccResults) ccResults.innerHTML = '';
+			
+			// Wait for card to shrink before transitioning
+			setTimeout(() => {
+				goNext();
+			}, 350);
+		}
+	}
+
+	function proceedToMajor() {
+		if (selections.schools.length > 0) {
+			// Clear search results first for smooth transition
+			const schoolsResults = document.getElementById('schools-results');
+			if (schoolsResults) schoolsResults.innerHTML = '';
+			
+			// Wait for card to shrink before transitioning
+			setTimeout(() => {
+				goNext();
+			}, 350);
+		}
+	}
+
+	function showSummary() {
+		if (selections.major) {
+			// Clear search results first for smooth transition
+			const majorResults = document.getElementById('major-results');
+			if (majorResults) majorResults.innerHTML = '';
+			
+			// Wait for card to shrink before transitioning
+			setTimeout(() => {
+				document.getElementById('selected-cc').textContent = selections.cc;
+				document.getElementById('selected-schools').textContent = selections.schools.join(', ');
+				document.getElementById('selected-major').textContent = selections.major;
+				goNext();
+			}, 350);
+		}
+	}
+
+		function continueToNext() {
+			alert('Continue to course selection! (Next phase of development)');
+			console.log('User selections:', selections);
+		}
+
 
 	// ========== CHAT FUNCTIONALITY ==========
 	
@@ -1937,5 +2119,5 @@
 		initChatSidebar();
 	});
 </script>
-</body>
+	</body>
 </html>
