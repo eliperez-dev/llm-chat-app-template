@@ -21,22 +21,60 @@
 				padding: 0;
 			}
 
-			body {
-				font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-				background: radial-gradient(circle at center, 
-					rgba(240, 230, 190, 0.6) 0%, 
-					rgba(200, 210, 180, 0.4) 20%,
-					rgba(232, 227, 216, 0.8) 45%,
-					#e8e3d8 70%, 
-					#e5e0d3 100%);
-				min-height: 100vh;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				padding: 2rem;
-				overflow: hidden;
-				cursor: none; /* Hide default cursor */
-			}
+		body {
+			font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+			background: linear-gradient(180deg, 
+				#f5f6e8 0%,
+				#e8e9ca 20%,
+				#d5d9b8 40%,
+				#c4d1b3 60%,
+				#b8c8a8 80%,
+				#b8c8a8 100%);
+			min-height: 100vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 2rem;
+			overflow: hidden;
+			cursor: none; /* Hide default cursor */
+			position: relative;
+		}
+
+		/* Bottom Left Corner Vignette */
+		body::before {
+			content: '';
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			width: 50%;
+			height: 60%;
+			background: radial-gradient(ellipse at bottom left,
+				rgba(74, 107, 62, 0.5) 0%,
+				rgba(90, 125, 78, 0.35) 25%,
+				rgba(122, 155, 108, 0.2) 50%,
+				transparent 75%);
+			filter: blur(60px);
+			pointer-events: none;
+			z-index: 0;
+		}
+
+		/* Bottom Right Corner Vignette */
+		body::after {
+			content: '';
+			position: fixed;
+			bottom: 0;
+			right: 0;
+			width: 50%;
+			height: 60%;
+			background: radial-gradient(ellipse at bottom right,
+				rgba(74, 107, 62, 0.5) 0%,
+				rgba(90, 125, 78, 0.35) 25%,
+				rgba(122, 155, 108, 0.2) 50%,
+				transparent 75%);
+			filter: blur(60px);
+			pointer-events: none;
+			z-index: 0;
+		}
 
 			/* Custom Cursor */
 			.cursor-dot {
@@ -100,12 +138,13 @@
 				}
 			}
 
-		.container {
-			width: 100%;
-			max-width: 600px;
-			position: relative;
-			margin: 0 auto;
-		}
+	.container {
+		width: 100%;
+		max-width: 600px;
+		position: relative;
+		margin: 0 auto;
+		z-index: 1;
+	}
 
 			/* Landing Page Styles */
 		.landing-page {
@@ -138,6 +177,7 @@
 		align-items: flex-start;
 		min-height: 100vh;
 		padding-top: 3rem;
+		z-index: 1;
 	}
 
 			.app-container.visible {
@@ -235,7 +275,7 @@
 			}
 
 	/* Chat Sidebar */
-		.chat-sidebar {
+	.chat-sidebar {
 		position: fixed;
 		top: 50%;
 		left: 50%;
@@ -243,14 +283,19 @@
 		width: 75%;
 		max-width: 1000px;
 		height: 85vh;
-			background: #ffffff;
-			border-radius: 20px;
-			transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-			z-index: 9000;
-			display: flex;
-			flex-direction: column;
-			overflow: hidden;
-		}
+		background: rgba(255, 255, 255, 0.92);
+		backdrop-filter: blur(20px);
+		-webkit-backdrop-filter: blur(20px);
+		border: 1px solid rgba(255, 255, 255, 0.4);
+		border-radius: 20px;
+		transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+		z-index: 9000;
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
+		box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25),
+					0 8px 16px rgba(122, 155, 108, 0.15);
+	}
 
 		.chat-sidebar.open {
 		transform: translateX(-50%) translateY(-50%);
@@ -521,11 +566,15 @@
 
 	/* Segmented Progress Bar */
 	.progress-container {
-		background: rgba(255, 255, 255, 0.6);
+		background: rgba(255, 255, 255, 0.25);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		border: 1px solid rgba(255, 255, 255, 0.3);
 		border-radius: 20px;
 		padding: 1.25rem 2rem;
 		margin-bottom: 1.25rem;
-		box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
+					0 4px 8px rgba(122, 155, 108, 0.1);
 	}
 
 			.progress-bars {
@@ -601,10 +650,14 @@
 	/* Individual Card Styles with gradient backgrounds */
 	.card {
 		width: 100%;
-		background: linear-gradient(135deg, #e8e9ca 0%, #d5d9b8 100%);
+		background: linear-gradient(135deg, rgba(232, 233, 202, 0.95) 0%, rgba(213, 217, 184, 0.95) 100%);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		border: 1px solid rgba(255, 255, 255, 0.3);
 		border-radius: 30px;
 		padding: 2rem 2.5rem;
-		box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+		box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2),
+					0 8px 16px rgba(122, 155, 108, 0.15);
 		position: relative;
 		display: flex;
 		flex-direction: column;
@@ -612,10 +665,18 @@
 		overflow: hidden;
 	}
 
-			.card-1 { background: linear-gradient(135deg, #e8e9ca 0%, #d5d9b8 100%); }
-			.card-2 { background: linear-gradient(135deg, #c9d6d9 0%, #b3c5c9 100%); }
-			.card-3 { background: linear-gradient(135deg, #dfd8c9 0%, #cfc4ae 100%); }
-			.card-4 { background: linear-gradient(135deg, #d9ccc9 0%, #c9b8b3 100%); }
+		.card-1 { 
+			background: linear-gradient(135deg, rgba(232, 233, 202, 0.95) 0%, rgba(213, 217, 184, 0.95) 100%);
+		}
+		.card-2 { 
+			background: linear-gradient(135deg, rgba(201, 214, 217, 0.95) 0%, rgba(179, 197, 201, 0.95) 100%);
+		}
+		.card-3 { 
+			background: linear-gradient(135deg, rgba(223, 216, 201, 0.95) 0%, rgba(207, 196, 174, 0.95) 100%);
+		}
+		.card-4 { 
+			background: linear-gradient(135deg, rgba(217, 204, 201, 0.95) 0%, rgba(201, 184, 179, 0.95) 100%);
+		}
 
 			.section-title {
 				font-size: 1.65rem;
