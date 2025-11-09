@@ -9,15 +9,11 @@
  */
 import { Env, ChatMessage } from "./types";
 
-// Model ID for Workers AI model
-// https://developers.cloudflare.com/workers-ai/models/
 const MODEL_ID = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
 
-// Context for the LLM - customize this with your specific information
 const CONTEXT =
 	"You are the BetterTransfer Assistant, helping community college students successfully transfer to universities (UCs, CSUs, and private institutions). You have expertise in transfer requirements, course articulation, GPA requirements, application timelines, and major-specific pathways. Provide clear, actionable advice to help students achieve their transfer goals.";
 
-// Default system prompt
 const SYSTEM_PROMPT =
 	`You are the BetterTransfer Assistant - a friendly and knowledgeable guide for community college to university transfers. 
 
@@ -34,9 +30,6 @@ Be encouraging, specific, and provide actionable steps. Keep responses concise b
 Context: ${CONTEXT}`;
 
 export default {
-	/**
-	 * Main request handler for the Worker
-	 */
 	async fetch(
 		request: Request,
 		env: Env,
@@ -44,41 +37,30 @@ export default {
 	): Promise<Response> {
 		const url = new URL(request.url);
 
-		// Handle static assets (frontend)
 		if (url.pathname === "/" || !url.pathname.startsWith("/api/")) {
 			return env.ASSETS.fetch(request);
 		}
 
-		// API Routes
 		if (url.pathname === "/api/chat") {
-			// Handle POST requests for chat
 			if (request.method === "POST") {
 				return handleChatRequest(request, env);
 			}
-
-			// Method not allowed for other request types
 			return new Response("Method not allowed", { status: 405 });
 		}
 
-		// Handle 404 for unmatched routes
 		return new Response("Not found", { status: 404 });
 	},
 } satisfies ExportedHandler<Env>;
 
-/**
- * Handles chat API requests
- */
 async function handleChatRequest(
 	request: Request,
 	env: Env,
 ): Promise<Response> {
 	try {
-		// Parse JSON request body
 		const { messages = [] } = (await request.json()) as {
 			messages: ChatMessage[];
 		};
 
-		// Add system prompt if not present
 		if (!messages.some((msg) => msg.role === "system")) {
 			messages.unshift({ role: "system", content: SYSTEM_PROMPT });
 		}
@@ -91,17 +73,10 @@ async function handleChatRequest(
 			},
 			{
 				returnRawResponse: true,
-				// Uncomment to use AI Gateway
-				// gateway: {
-				//   id: "YOUR_GATEWAY_ID", // Replace with your AI Gateway ID
-				//   skipCache: false,      // Set to true to bypass cache
-				//   cacheTtl: 3600,        // Cache time-to-live in seconds
-				// },
 			},
 		);
 
-		// Return streaming response
-		return response;
+		return response as Response;
 	} catch (error) {
 		console.error("Error processing chat request:", error);
 		return new Response(
