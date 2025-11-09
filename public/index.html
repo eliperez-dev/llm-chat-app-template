@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Better Transfer</title>
+		<title>TransferReady</title>
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1300,7 +1300,7 @@
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
 				</svg>
 			</button>
-			<h3>Transfer Assistant</h3>
+			<h3>TransferReady Assistant</h3>
 			<button class="chat-close" id="chat-close">×</button>
 				</div>
 
@@ -1328,7 +1328,7 @@
 	<!-- Landing Page -->
 		<div class="landing-page" id="landing-page">
 			<div class="landing-content">
-				<h1 class="landing-title">BetterTransfer</h1>
+				<h1 class="landing-title">TransferReady</h1>
 				<p class="landing-tagline">Map your course requirements and track your progress from community college to university</p>
 
 				<!-- Start Button -->
@@ -1340,7 +1340,7 @@
 		<div class="app-container" id="app-container">
 			<div class="container">
 			<div class="header">
-				<h1>Better Transfer</h1>
+				<h1>TransferReady</h1>
 				<p>Your path to UC/CSU transfer success</p>
 			</div>
 
@@ -1474,7 +1474,7 @@
 									<strong>Major:</strong> <span id="selected-major"></span>
 								</div>
 							</div>
-							<button class="continue-button" onclick="continueToNext()">Chat with Transfer Assistant →</button>
+							<button class="continue-button" onclick="continueToNext()">Chat with TransferReady Assistant →</button>
 						</div>
 					</div>
 
@@ -1934,8 +1934,8 @@
 			chatSidebar.classList.remove('open');
 			appContainer.style.display = 'flex';
 			
-			chatMessages.innerHTML = '<div class="chat-message assistant">Welcome to BetterTransfer! I\'m here to help you navigate your path from community college to university. Ask me about course requirements, transfer deadlines, GPA requirements, or school selection. Let\'s make your transfer journey smooth! 🎓</div>';
-			chatState.messages = [{type: 'assistant', text: 'Welcome to BetterTransfer! I\'m here to help you navigate your path from community college to university. Ask me about course requirements, transfer deadlines, GPA requirements, or school selection. Let\'s make your transfer journey smooth! 🎓'}];
+			chatMessages.innerHTML = '<div class="chat-message assistant">Welcome to TransferReady! I\'m here to help you navigate your path from community college to university. Ask me about course requirements, transfer deadlines, GPA requirements, or school selection. Let\'s make your transfer journey smooth! 🎓</div>';
+			chatState.messages = [{type: 'assistant', text: 'Welcome to TransferReady! I\'m here to help you navigate your path from community college to university. Ask me about course requirements, transfer deadlines, GPA requirements, or school selection. Let\'s make your transfer journey smooth! 🎓'}];
 		}
 
 
@@ -1956,7 +1956,7 @@
 		const quickActionButtons = document.querySelectorAll('.quick-action-btn');
 
 		// Add welcome message
-		addMessage('assistant', "Welcome to BetterTransfer, an AI-powered assistant created by Gabe, Eli, Angelo, and Tim for the HackCC hackathon! I'm here to help you navigate your transfer journey from community college to university. Ask me about course requirements, transfer deadlines, GPA requirements, or school selection. I'll search our custom database to provide personalized, accurate information for your situation.");
+		addMessage('assistant', "Welcome to TransferReady, an AI-powered assistant created by Gabe, Eli, Angelo, and Tim for the HackCC hackathon! I'm here to help you navigate your transfer journey from community college to university. Ask me about course requirements, transfer deadlines, GPA requirements, or school selection. I'll search our custom database to provide personalized, accurate information for your situation.");
 
 		// Toggle chat
 		chatClose.addEventListener('click', () => {
