@@ -579,8 +579,8 @@
 		/* Swiper Container for Stacked Cards */
 		.swiper-container {
 			width: 100%;
+			height: 520px;
 			position: relative;
-			transition: height 0.3s ease;
 			overflow: visible;
 		}
 
@@ -605,8 +605,8 @@
 		position: relative;
 		display: flex;
 		flex-direction: column;
-		transition: height 0.3s ease;
-		overflow: visible;
+		height: 520px;
+		overflow: hidden;
 	}
 
 			.card-1 { background: linear-gradient(135deg, #e8e9ca 0%, #d5d9b8 100%); }
@@ -625,7 +625,7 @@
 	.section-subtitle {
 		font-size: 0.9rem;
 		color: #6b6857;
-		margin-bottom: 1.5rem;
+		margin-bottom: 1.25rem;
 		text-align: center;
 		font-weight: 400;
 	}
@@ -633,7 +633,7 @@
 	/* Search Box Container */
 	.search-box-container {
 		position: relative;
-		margin-bottom: 0.75rem;
+		margin-bottom: 0.5rem;
 	}
 
 	.search-input-main {
@@ -679,8 +679,8 @@
 		gap: 0.6rem;
 		max-height: 0;
 		opacity: 0;
-		transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
-					opacity 0.3s ease;
+		transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), 
+					opacity 0.25s ease;
 		scrollbar-width: thin;
 		scrollbar-color: rgba(122, 155, 108, 0.3) transparent;
 	}
@@ -706,7 +706,7 @@
 	.search-results-container:not(:empty) {
 		max-height: 240px;
 		opacity: 1;
-		margin-bottom: 1rem;
+		margin-bottom: 0.75rem;
 	}
 
 	.search-result-item {
@@ -722,14 +722,14 @@
 		font-family: 'Inter', sans-serif;
 		text-align: left;
 		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-		animation: fadeInUp 0.2s ease-out;
+		animation: fadeInUp 0.15s ease-out;
 		flex-shrink: 0;
 	}
 
 	@keyframes fadeInUp {
 		from {
 			opacity: 0;
-			transform: translateY(10px);
+			transform: translateY(4px);
 		}
 		to {
 			opacity: 1;
@@ -773,11 +773,32 @@
 		gap: 0.5rem;
 		margin-bottom: 0;
 		min-height: 0;
+		max-height: 90px;
+		overflow-y: auto;
 		transition: margin-bottom 0.3s ease;
+		scrollbar-width: thin;
+		scrollbar-color: rgba(122, 155, 108, 0.3) transparent;
+	}
+
+	.selected-schools::-webkit-scrollbar {
+		width: 6px;
+	}
+
+	.selected-schools::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	.selected-schools::-webkit-scrollbar-thumb {
+		background: rgba(122, 155, 108, 0.3);
+		border-radius: 10px;
+	}
+
+	.selected-schools::-webkit-scrollbar-thumb:hover {
+		background: rgba(122, 155, 108, 0.5);
 	}
 
 	.selected-schools:not(:empty) {
-		margin-bottom: 0.75rem;
+		margin-bottom: 0.5rem;
 	}
 
 	.selected-school-tag {
@@ -1173,7 +1194,8 @@
 				
 		.card {
 			padding: 1.75rem 1.5rem 1.5rem;
-			overflow: visible;
+			height: 520px;
+			overflow: hidden;
 		}
 
 				.search-container, .back-button {
@@ -1201,7 +1223,7 @@
 				}
 
 			.swiper-container {
-				/* Height will be set dynamically by JavaScript */
+				height: 520px;
 				margin-bottom: 2rem;
 			}
 
@@ -1566,44 +1588,6 @@
 			let swiper;
 			let currentSlide = 0;
 
-	// Sync all card heights to match the active card
-	function syncCardHeights() {
-		// Use requestAnimationFrame to ensure DOM is fully rendered
-		requestAnimationFrame(() => {
-			requestAnimationFrame(() => {
-				const activeSlide = document.querySelector('.swiper-slide-active');
-				if (!activeSlide) return;
-				
-				const activeCard = activeSlide.querySelector('.card');
-				if (!activeCard) return;
-				
-				// Temporarily remove height constraint to measure natural size
-				const allCards = document.querySelectorAll('.card');
-				allCards.forEach(card => {
-					card.style.height = 'auto';
-				});
-				
-				// Wait one more frame for layout to update
-				requestAnimationFrame(() => {
-					// Get the natural height of the active card's content
-					const naturalHeight = activeCard.scrollHeight;
-					
-					console.log('📏 Syncing card heights to:', naturalHeight + 'px');
-					
-					// Apply this exact height to ALL cards (forces them to be identical)
-					allCards.forEach(card => {
-						card.style.height = naturalHeight + 'px';
-					});
-					
-					// Also set the swiper container height
-					const swiperContainer = document.getElementById('card-swiper');
-					if (swiperContainer) {
-						swiperContainer.style.height = naturalHeight + 'px';
-					}
-				});
-			});
-		});
-	}
 
 	// Initialize Swiper with cards effect
 	document.addEventListener('DOMContentLoaded', async function() {
@@ -1625,30 +1609,11 @@
 				slideChange: function() {
 					currentSlide = this.activeIndex;
 					updateProgress();
-					// Sync heights after slide change (wait for swiper transition to complete)
-					setTimeout(syncCardHeights, 650);
 				}
 			}
 		});
 
 		updateProgress();
-		
-		// Initial height sync (wait for initial render)
-		setTimeout(syncCardHeights, 200);
-
-		// Set up MutationObserver to watch for content changes in search results
-		const searchResultsContainers = document.querySelectorAll('.search-results-container');
-		const observer = new MutationObserver(() => {
-			// Content changed, re-sync heights after a short delay
-			setTimeout(syncCardHeights, 350);
-		});
-		
-		searchResultsContainers.forEach(container => {
-			observer.observe(container, {
-				childList: true,
-				subtree: true
-			});
-		});
 
 		// Initialize custom cursor
 		initCustomCursor();
@@ -1778,16 +1743,19 @@
 			}
 		}
 
-	// Filter colleges based on search
-	function filterColleges(type) {
-		const searchInput = document.getElementById(`${type}-search`);
+	// Debounce timers for each search type
+	const debounceTimers = {
+		cc: null,
+		schools: null,
+		major: null
+	};
+
+	// Filter colleges based on search (actual filtering logic)
+	function performFilter(type, searchTerm) {
 		const resultsContainer = document.getElementById(`${type}-results`);
-		const searchTerm = searchInput.value.toLowerCase().trim();
 		
 		if (!searchTerm) {
 			resultsContainer.innerHTML = '';
-			// Sync heights when results are cleared (wait for transition)
-			setTimeout(syncCardHeights, 350);
 			return;
 		}
 		
@@ -1796,9 +1764,23 @@
 		else if (type === 'schools') data = allSchools;
 		else if (type === 'major') data = allMajors;
 		
-		const filtered = data.filter(item => 
-			item.toLowerCase().includes(searchTerm)
-		).slice(0, 8); // Limit to 8 results
+		// Filter and sort by relevance
+		const filtered = data
+			.filter(item => item.toLowerCase().includes(searchTerm))
+			.sort((a, b) => {
+				const aLower = a.toLowerCase();
+				const bLower = b.toLowerCase();
+				const aStarts = aLower.startsWith(searchTerm);
+				const bStarts = bLower.startsWith(searchTerm);
+				
+				// Items starting with search term come first
+				if (aStarts && !bStarts) return -1;
+				if (!aStarts && bStarts) return 1;
+				
+				// Within each group, sort alphabetically
+				return a.localeCompare(b);
+			})
+			.slice(0, 8); // Limit to 8 results
 		
 		if (filtered.length === 0) {
 			resultsContainer.innerHTML = '<div class="no-results">No matches found. Try a different search.</div>';
@@ -1815,44 +1797,56 @@
 		}
 		
 		console.log('🔍 Filtered results:', filtered.length, 'items');
-		
-		// Sync heights after results are displayed (wait for CSS transition to complete)
-		setTimeout(syncCardHeights, 400);
 	}
 
-		// Select item from search results
-		function selectItem(type, item) {
-			if (type === 'cc') {
-				selections.cc = item;
-				document.getElementById('cc-search').value = item;
-				document.getElementById('cc-results').innerHTML = '';
-				document.getElementById('continue-btn-1').disabled = false;
-			} else if (type === 'schools') {
-				if (selections.schools.includes(item)) {
-					// Remove if already selected
-					selections.schools = selections.schools.filter(s => s !== item);
-				} else {
-					// Add to selections
-					selections.schools.push(item);
-				}
-				updateSelectedSchoolsTags();
-				document.getElementById('continue-btn-2').disabled = selections.schools.length === 0;
-				// Re-render results to update selected state
-				filterColleges('schools');
-			} else if (type === 'major') {
-				selections.major = item;
-				document.getElementById('major-search').value = item;
-				document.getElementById('major-results').innerHTML = '';
-				document.getElementById('continue-btn-3').disabled = false;
-			}
+	// Debounced filter function
+	function filterColleges(type) {
+		const searchInput = document.getElementById(`${type}-search`);
+		const searchTerm = searchInput.value.toLowerCase().trim();
+		
+		// Clear any existing timer for this search type
+		if (debounceTimers[type]) {
+			clearTimeout(debounceTimers[type]);
 		}
+		
+		// Set new timer - wait 200ms after user stops typing
+		debounceTimers[type] = setTimeout(() => {
+			performFilter(type, searchTerm);
+		}, 200);
+	}
+
+	// Select item from search results
+	function selectItem(type, item) {
+		if (type === 'cc') {
+			selections.cc = item;
+			document.getElementById('cc-search').value = item;
+			document.getElementById('cc-results').innerHTML = '';
+			document.getElementById('continue-btn-1').disabled = false;
+		} else if (type === 'schools') {
+			if (selections.schools.includes(item)) {
+				// Remove if already selected
+				selections.schools = selections.schools.filter(s => s !== item);
+			} else {
+				// Add to selections
+				selections.schools.push(item);
+			}
+			updateSelectedSchoolsTags();
+			document.getElementById('continue-btn-2').disabled = selections.schools.length === 0;
+			// Re-render results to update selected state
+			filterColleges('schools');
+		} else if (type === 'major') {
+			selections.major = item;
+			document.getElementById('major-search').value = item;
+			document.getElementById('major-results').innerHTML = '';
+			document.getElementById('continue-btn-3').disabled = false;
+		}
+	}
 
 	// Update selected schools tags display
 	function updateSelectedSchoolsTags() {
 		const container = document.getElementById('selected-schools');
 		if (selections.schools.length === 0) {
 			container.innerHTML = '';
-			setTimeout(syncCardHeights, 50);
 			return;
 		}
 		
@@ -1862,9 +1856,6 @@
 				<span class="remove-tag" onclick="removeSchool('${school.replace(/'/g, "\\'")}')">×</span>
 			</div>
 		`).join('');
-		
-		// Sync heights after tags are updated
-		setTimeout(syncCardHeights, 50);
 	}
 
 		// Remove a school from selections
