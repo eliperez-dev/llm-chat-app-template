@@ -1309,14 +1309,14 @@
 			<!-- Messages will be added dynamically -->
 			</div>
 
-		<!-- Quick Actions -->
-		<div class="quick-actions">
+		<!-- Quick Actions - COMMENTED OUT -->
+		<!-- <div class="quick-actions">
 			<div class="quick-action-label">Quick Actions</div>
 			<button class="quick-action-btn">What are the transfer requirements?</button>
 			<button class="quick-action-btn">Find internships in my field</button>
 			<button class="quick-action-btn">Mentorship programs available?</button>
 			<button class="quick-action-btn">Free resources and programs</button>
-			</div>
+			</div> -->
 
 		<!-- Chat Input -->
 		<div class="chat-input-container">
@@ -1953,7 +1953,7 @@
 		const chatClose = document.getElementById('chat-close');
 		const chatSidebar = document.getElementById('chat-sidebar');
 		const appContainer = document.querySelector('.app-container');
-		const quickActionButtons = document.querySelectorAll('.quick-action-btn');
+		// const quickActionButtons = document.querySelectorAll('.quick-action-btn'); // COMMENTED OUT - quick actions menu hidden
 
 		// Add welcome message
 		addMessage('assistant', "Welcome to BetterTransfer, an AI-powered assistant created by Gabe, Eli, Angelo, and Tim for the HackCC hackathon! I'm here to help you navigate your transfer journey from community college to university. Ask me about course requirements, transfer deadlines, GPA requirements, or school selection. I'll search our custom database to provide personalized, accurate information for your situation.");
@@ -1982,7 +1982,7 @@
 			}
 		});
 
-		// Quick action buttons with API integration
+		/* Quick action buttons with API integration - COMMENTED OUT
 		quickActionButtons.forEach(btn => {
 			btn.addEventListener('click', async () => {
 				const buttonText = btn.textContent.trim();
@@ -2011,6 +2011,7 @@
 				}
 			});
 		});
+	*/
 	}
 
 	function toggleChat() {
