@@ -14,8 +14,8 @@ const MODEL_ID = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
 const CONTEXT =
 	"You are the BetterTransfer Assistant, helping community college students successfully transfer to universities (UCs, CSUs, and private institutions). You have expertise in transfer requirements, course articulation, GPA requirements, application timelines, and major-specific pathways. Provide clear, actionable advice to help students achieve their transfer goals.";
 
-const SYSTEM_PROMPT =
-	`You are the BetterTransfer Assistant - a friendly and knowledgeable guide for community college to university transfers. 
+function buildSystemPrompt(userProfile?: { cc?: string; schools?: string[]; major?: string }): string {
+	let prompt = `You are the BetterTransfer Assistant - a friendly and knowledgeable guide for community college to university transfers. 
 
 Your role is to help students with:
 - Course requirements and articulation agreements
@@ -28,6 +28,19 @@ Your role is to help students with:
 Be encouraging, specific, and provide actionable steps. Keep responses concise but comprehensive.
 
 Context: ${CONTEXT}`;
+
+	if (userProfile) {
+		prompt += "\n\nStudent Profile:";
+		if (userProfile.cc) prompt += `\n- Current Community College: ${userProfile.cc}`;
+		if (userProfile.major) prompt += `\n- Target Major: ${userProfile.major}`;
+		if (userProfile.schools && userProfile.schools.length > 0) {
+			prompt += `\n- Target Universities: ${userProfile.schools.join(", ")}`;
+		}
+		prompt += "\n\nUse this information to provide personalized transfer advice.";
+	}
+
+	return prompt;
+}
 
 export default {
 	async fetch(
@@ -57,12 +70,15 @@ async function handleChatRequest(
 	env: Env,
 ): Promise<Response> {
 	try {
-		const { messages = [] } = (await request.json()) as {
+		const { messages = [], userProfile } = (await request.json()) as {
 			messages: ChatMessage[];
+			userProfile?: { cc?: string; schools?: string[]; major?: string };
 		};
 
+		const systemPrompt = buildSystemPrompt(userProfile);
+
 		if (!messages.some((msg) => msg.role === "system")) {
-			messages.unshift({ role: "system", content: SYSTEM_PROMPT });
+			messages.unshift({ role: "system", content: systemPrompt });
 		}
 
 		const response = await env.AI.run(

@@ -202,7 +202,7 @@
 				background: linear-gradient(135deg, #7a9b6c, #8fad7d);
 				border: none;
 				border-radius: 50%;
-				display: none !important;
+				display: none;
 				align-items: center;
 				justify-content: center;
 				cursor: none;
@@ -226,27 +226,30 @@
 				fill: white;
 			}
 
-	/* Chat Sidebar */
-		.chat-sidebar {
-		position: fixed;
-		top: 50%;
-		left: 50%;
-		transform: translateX(-50%) translateY(calc(-50% + 100vh));
-		width: 75%;
-		max-width: 1000px;
-		height: 85vh;
-			background: #ffffff;
-			border-radius: 20px;
-			transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-			z-index: 9000;
-			display: flex;
-			flex-direction: column;
-			overflow: hidden;
-		}
+			/* Chat Sidebar */
+			.chat-sidebar {
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+				width: 100%;
+			height: 100vh;
+				background: rgba(255, 255, 255, 0.95);
+				backdrop-filter: blur(20px);
+				border-radius: 0;
+				box-shadow: none;
+				transform: translateY(100%);
+				transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+				z-index: 9000;
+				display: flex;
+				flex-direction: column;
+				overflow: hidden;
+			}
 
-		.chat-sidebar.open {
-		transform: translateX(-50%) translateY(-50%);
-		}
+			.chat-sidebar.open {
+			transform: translateY(0);
+			}
 
 	.app-container {
 		position: relative;
@@ -458,7 +461,7 @@
 				border-radius: 12px;
 				font-size: 0.9rem;
 				font-family: 'Inter', sans-serif;
-				background: #ffffff;
+				background: rgba(255, 255, 255, 0.5);
 				transition: all 0.2s ease;
 				resize: none;
 				max-height: 100px;
@@ -1130,7 +1133,7 @@
 			.summary-display {
 				text-align: center;
 				margin: 1.5rem 0;
-				background: #ffffff;
+				background: rgba(255, 255, 255, 0.5);
 				padding: 1.5rem;
 				border-radius: 16px;
 			}
@@ -1232,11 +1235,12 @@
 			}
 
 			.chat-sidebar {
-				width: 95%;
-				height: 90vh;
-				border-radius: 16px;
-				top: 50%;
-				left: 50%;
+				top: 0;
+				right: 0;
+				left: 0;
+				bottom: 0;
+				width: 100%;
+				border-radius: 0;
 				margin: 0;
 			}
 
@@ -1312,10 +1316,10 @@
 		<!-- Quick Actions -->
 		<div class="quick-actions">
 			<div class="quick-action-label">Quick Actions</div>
-			<button class="quick-action-btn">What are the transfer requirements?</button>
-			<button class="quick-action-btn">Find internships in my field</button>
-			<button class="quick-action-btn">Mentorship programs available?</button>
-			<button class="quick-action-btn">Free resources and programs</button>
+			<button class="quick-action-btn">What courses do I need?</button>
+			<button class="quick-action-btn">GPA requirements?</button>
+			<button class="quick-action-btn">Transfer deadlines?</button>
+			<button class="quick-action-btn">School comparison?</button>
 			</div>
 
 		<!-- Chat Input -->
@@ -1474,7 +1478,7 @@
 									<strong>Major:</strong> <span id="selected-major"></span>
 								</div>
 							</div>
-							<button class="continue-button" onclick="continueToNext()">Chat with Transfer Assistant →</button>
+							<button class="continue-button" onclick="continueToNext()">Continue to Course Selection →</button>
 						</div>
 					</div>
 
@@ -1907,35 +1911,8 @@
 	}
 
 		function continueToNext() {
-			const appContainer = document.querySelector('.app-container');
-			const chatSidebar = document.getElementById('chat-sidebar');
-			const chatInput = document.getElementById('chat-input');
-			
-			window.userProfile = {
-				cc: selections.cc,
-				schools: selections.schools,
-				major: selections.major
-			};
-			
-			localStorage.setItem('userProfile', JSON.stringify(window.userProfile));
-			
-			appContainer.style.display = 'none';
-			chatSidebar.classList.add('open');
-			chatInput.focus();
-			
-			console.log('User profile saved:', window.userProfile);
-		}
-		
-		function goBackToForm() {
-			const appContainer = document.querySelector('.app-container');
-			const chatSidebar = document.getElementById('chat-sidebar');
-			const chatMessages = document.getElementById('chat-messages');
-			
-			chatSidebar.classList.remove('open');
-			appContainer.style.display = 'flex';
-			
-			chatMessages.innerHTML = '<div class="chat-message assistant">Welcome to BetterTransfer! I\'m here to help you navigate your path from community college to university. Ask me about course requirements, transfer deadlines, GPA requirements, or school selection. Let\'s make your transfer journey smooth! 🎓</div>';
-			chatState.messages = [{type: 'assistant', text: 'Welcome to BetterTransfer! I\'m here to help you navigate your path from community college to university. Ask me about course requirements, transfer deadlines, GPA requirements, or school selection. Let\'s make your transfer journey smooth! 🎓'}];
+			alert('Continue to course selection! (Next phase of development)');
+			console.log('User selections:', selections);
 		}
 
 
@@ -1947,11 +1924,12 @@
 	};
 
 	function initChatSidebar() {
+		const chatToggle = document.getElementById('chat-toggle');
+		const chatSidebar = document.getElementById('chat-sidebar');
+		const chatClose = document.getElementById('chat-close');
 		const chatInput = document.getElementById('chat-input');
 		const chatSendBtn = document.getElementById('chat-send-btn');
 		const chatMessages = document.getElementById('chat-messages');
-		const chatClose = document.getElementById('chat-close');
-		const chatSidebar = document.getElementById('chat-sidebar');
 		const appContainer = document.querySelector('.app-container');
 		const quickActionButtons = document.querySelectorAll('.quick-action-btn');
 
@@ -1959,6 +1937,10 @@
 		addMessage('assistant', "Welcome to BetterTransfer! I'm here to help you navigate your path from community college to university. Ask me about course requirements, transfer deadlines, GPA requirements, or school selection. Let's make your transfer journey smooth! 🎓");
 
 		// Toggle chat
+		chatToggle.addEventListener('click', () => {
+			toggleChat();
+		});
+
 		chatClose.addEventListener('click', () => {
 			toggleChat();
 		});
@@ -1975,167 +1957,32 @@
 			}
 		});
 
-		// Close chat when clicking backdrop
-		chatSidebar.addEventListener('click', (e) => {
-			if (e.target === chatSidebar) {
-				toggleChat();
-			}
-		});
-
-		// Quick action buttons with API integration
+		// Quick action buttons
 		quickActionButtons.forEach(btn => {
-			btn.addEventListener('click', async () => {
-				const buttonText = btn.textContent.trim();
-				
-				try {
-					if (buttonText.includes('transfer requirements')) {
-						addMessage('user', buttonText);
-						await fetchAndSendTransferRequirements();
-					} else if (buttonText.includes('internships')) {
-						addMessage('user', buttonText);
-						await fetchAndSendInternships();
-					} else if (buttonText.includes('Mentorship')) {
-						addMessage('user', buttonText);
-						await fetchAndSendMentorships();
-					} else if (buttonText.includes('Free resources')) {
-						addMessage('user', buttonText);
-						await fetchAndSendFreeResources();
-					} else {
-						chatInput.value = buttonText;
-						sendMessage();
-					}
-				} catch (error) {
-					console.error('Quick action error:', error);
-					chatInput.value = buttonText;
-					sendMessage();
-				}
+			btn.addEventListener('click', () => {
+				chatInput.value = btn.textContent.trim();
+				sendMessage();
 			});
 		});
 	}
 
 	function toggleChat() {
+		const chatToggle = document.getElementById('chat-toggle');
 		const chatSidebar = document.getElementById('chat-sidebar');
+		const appContainer = document.querySelector('.app-container');
 		
 		chatState.isOpen = !chatState.isOpen;
 		
 		if (chatState.isOpen) {
 			chatSidebar.classList.add('open');
+			appContainer.classList.add('chat-open');
+			chatToggle.style.display = 'none';
 		} else {
 			chatSidebar.classList.remove('open');
+			appContainer.classList.remove('chat-open');
+			chatToggle.style.display = 'flex';
 		}
 	}
-
-	
-	async function fetchAndSendTransferRequirements() {
-		try {
-			addMessage('assistant', 'Checking transfer requirements...');
-			
-			if (!window.userProfile || !window.userProfile.cc || window.userProfile.schools.length === 0) {
-				addMessage('assistant', 'Please provide your community college and target schools in the form.');
-				return;
-			}
-			
-			const results = [];
-			for (const school of window.userProfile.schools) {
-				try {
-					const response = await fetch('http://localhost:5000/api/transfer/check', {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify({
-							from_school: window.userProfile.cc,
-							to_school: school
-						})
-					});
-					
-					if (response.ok) {
-						const data = await response.json();
-						results.push({school, data});
-					}
-				} catch (err) {
-					console.log(`Error checking ${school}:`, err);
-				}
-			}
-			
-			if (results.length > 0) {
-				const message = `Here are the transfer agreements I found:\n\n${results.map(r => `**${r.school}**\n- Agreement Year: ${r.data.year}\n- Status: Transfer agreement exists\n- Visit: ${r.data.assist_url}`).join('\n\n')}`;
-				addMessage('assistant', message);
-			} else {
-				addMessage('assistant', 'Could not find transfer agreements. Please check your school names or visit assist.org directly.');
-			}
-		} catch (error) {
-			console.error('Transfer requirements error:', error);
-			addMessage('assistant', 'Unable to fetch transfer requirements. Please ask me directly about your transfer path.');
-		}
-	}
-	
-	async function fetchAndSendInternships() {
-		try {
-			addMessage('assistant', 'Finding internship opportunities...');
-			
-			if (!window.userProfile || !window.userProfile.major) {
-				addMessage('assistant', 'Please provide your major in the form to get relevant internship suggestions.');
-				return;
-			}
-			
-			const response = await fetch(`http://localhost:5000/api/stem-internships?major=${encodeURIComponent(window.userProfile.major)}&limit=5`);
-			
-			if (response.ok) {
-				const data = await response.json();
-				if (data.internships && data.internships.length > 0) {
-					const message = `Great! I found ${data.internships.length} internship opportunities for ${window.userProfile.major}:\n\n${data.internships.map((i, idx) => `${idx + 1}. **${i.company}** - ${i.role}\n   Location: ${i.location}\n   Season: ${i.season}`).join('\n\n')}`;
-					addMessage('assistant', message);
-				} else {
-					addMessage('assistant', `No specific internships found for ${window.userProfile.major}, but there may be general opportunities. What companies or fields interest you?`);
-				}
-			}
-		} catch (error) {
-			console.error('Internships error:', error);
-			addMessage('assistant', 'Unable to fetch internship data. Let me help you find opportunities another way. What type of internship are you looking for?');
-		}
-	}
-	
-	async function fetchAndSendMentorships() {
-		try {
-			addMessage('assistant', 'Finding mentorship programs...');
-			
-			const response = await fetch('http://localhost:5000/api/mentorships/community-college?limit=5');
-			
-			if (response.ok) {
-				const data = await response.json();
-				if (data.mentorships && data.mentorships.length > 0) {
-					const message = `I found ${data.mentorships.length} mentorship programs for community college students:\n\n${data.mentorships.map((m, idx) => `${idx + 1}. **${m.organization}**\n   Focus: ${m.major || 'General'}\n   Format: ${m.format}\n   Cost: ${m.cost}`).join('\n\n')}`;
-					addMessage('assistant', message);
-				} else {
-					addMessage('assistant', 'Let me help you find suitable mentorship programs. What field or area are you interested in?');
-				}
-			}
-		} catch (error) {
-			console.error('Mentorships error:', error);
-			addMessage('assistant', 'Unable to fetch mentorship data. I can still help you find mentors in your field. What are your interests?');
-		}
-	}
-	
-	async function fetchAndSendFreeResources() {
-		try {
-			addMessage('assistant', 'Finding free resources...');
-			
-			const response = await fetch('http://localhost:5000/api/mentorships/free?limit=5');
-			
-			if (response.ok) {
-				const data = await response.json();
-				if (data.mentorships && data.mentorships.length > 0) {
-					const message = `Excellent! I found ${data.mentorships.length} free resources:\n\n${data.mentorships.map((r, idx) => `${idx + 1}. **${r.organization}**\n   Format: ${r.format}\n   Target: ${r.target_audience || 'All students'}`).join('\n\n')}\n\nThese are great ways to get support without any cost!`;
-					addMessage('assistant', message);
-				} else {
-					addMessage('assistant', 'Let me help you find free resources. There are many affordable options available for transfer students!');
-				}
-			}
-		} catch (error) {
-			console.error('Free resources error:', error);
-			addMessage('assistant', 'I can still help you find affordable resources and programs. What are you most interested in?');
-		}
-	}
-
 
 	async function sendMessage() {
 		const chatInput = document.getElementById('chat-input');
@@ -2158,10 +2005,7 @@
 			const response = await fetch('/api/chat', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-				messages,
-				userProfile: window.userProfile
-			})
+				body: JSON.stringify({ messages })
 			});
 			
 			if (!response.ok) throw new Error('API request failed');
@@ -2235,6 +2079,9 @@
 	function startPlanning() {
 		const landingPage = document.getElementById('landing-page');
 		const appContainer = document.querySelector('.app-container');
+		const chatToggle = document.getElementById('chat-toggle');
+		
+		// Show app container immediately (behind landing page)
 		appContainer.style.display = 'flex';
 		
 		// Small delay to ensure display change is registered
@@ -2250,6 +2097,10 @@
 				landingPage.style.display = 'none';
 			}, 300);
 			
+			// Show chat toggle button after animation
+			setTimeout(() => {
+				chatToggle.classList.add('visible');
+			}, 250);
 		}, 20);
 	}
 
