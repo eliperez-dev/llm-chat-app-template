@@ -40,8 +40,14 @@ const TOOLS_DEFINITION = `You have access to the following tools to help answer 
    - Returns: List of free educational resources and mentorship opportunities
    - Reference this tool as: "Free Resources Tool by Gabe"
 
+5. CS Articulations (find_cs_articulations) - Created by Angelo
+   - Use when student asks about Computer Science course articulations or equivalencies between community colleges and UC schools
+   - Parameters: cc (string, required), uc (string, required)
+   - Returns: CS course mapping and articulation details between specific CC and UC campus
+   - Reference this tool as: "CS Articulations Tool by Angelo"
+
 When using tools, format your request as: <TOOL_CALL>tool_name(param1="value1", param2="value2")</TOOL_CALL>
-You can use multiple tools in one response. After tool results are provided, analyze and present the findings to the student using the tool reference names and creator attribution (e.g., "According to the Transfer Requirements Tool by Eli..." or "Based on the Internship Search Tool by Gabe...").`;
+You can use multiple tools in one response. After tool results are provided, analyze and present the findings to the student using the tool reference names and creator attribution (e.g., "According to the Transfer Requirements Tool by Eli..." or "Based on the Internship Search Tool by Gabe..." or "Per the CS Articulations Tool by Angelo...").`;
 
 function buildSystemPrompt(userProfile?: { cc?: string; schools?: string[]; major?: string }): string {
 	let prompt = `You are the BetterTransfer Assistant - a friendly and knowledgeable guide for community college to university transfers. 
@@ -80,6 +86,7 @@ const TOOL_NAMES: Record<string, string> = {
 	find_internships: "Internship Search Tool by Gabe",
 	find_mentorship_programs: "Mentorship Programs Tool by Gabe",
 	find_free_resources: "Free Resources Tool by Gabe",
+	find_cs_articulations: "CS Articulations Tool by Angelo",
 };
 
 async function executeTool(
@@ -123,6 +130,16 @@ async function executeTool(
 		if (toolName === "find_free_resources") {
 			const response = await fetch(
 				`${API_BASE_URL}/api/mentorships/free?limit=5`,
+			);
+			const data = await response.json();
+			return `[${toolDisplayName}] ${JSON.stringify(data)}`;
+		}
+
+		if (toolName === "find_cs_articulations") {
+			const response = await fetch(
+				`${API_BASE_URL}/api/cs-articulations?cc=${encodeURIComponent(
+					params.cc as string,
+				)}&uc=${encodeURIComponent(params.uc as string)}`,
 			);
 			const data = await response.json();
 			return `[${toolDisplayName}] ${JSON.stringify(data)}`;
