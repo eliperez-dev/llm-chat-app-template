@@ -12,36 +12,36 @@ import { Env, ChatMessage } from "./types";
 const MODEL_ID = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
 
 const CONTEXT =
-	"You are the BetterTransfer Assistant, helping community college students successfully transfer to universities (UCs, CSUs, and private institutions). You have expertise in transfer requirements, course articulation, GPA requirements, application timelines, and major-specific pathways. Provide clear, actionable advice to help students achieve their transfer goals.";
+	"You are the Transfer Ready Assistant, helping community college students successfully transfer to universities (UCs, CSUs, and private institutions). You have expertise in transfer requirements, course articulation, GPA requirements, application timelines, and major-specific pathways. Provide clear, actionable advice to help students achieve their transfer goals.";
 
 const TOOLS_DEFINITION = `You have access to the following tools to help answer student questions:
 
-1. TRANSFER_REQUIREMENTS_TOOL (check_transfer_requirements) - Created by Eli
+1. Transfer Requirements (check_transfer_requirements) - Created by Eli
    - Use when student asks about transfer requirements between specific schools
    - Parameters: from_school (string), to_school (string)
    - Returns: Transfer agreement details, requirements, and ASSIST.org link
-   - Reference this tool as: "Transfer Requirements Tool (by Eli)"
+   - Reference this tool as: "Transfer Requirements Tool by Eli"
 
-2. INTERNSHIP_SEARCH_TOOL (find_internships) - Created by Gabe
+2. Internship Search (find_internships) - Created by Gabe
    - Use when student asks about internships in their field
    - Parameters: major (string), limit (number, optional)
    - Returns: List of internship opportunities matching the major
-   - Reference this tool as: "Internship Search Tool (by Gabe)"
+   - Reference this tool as: "Internship Search Tool by Gabe"
 
-3. MENTORSHIP_PROGRAMS_TOOL (find_mentorship_programs) - Created by Gabe
+3. Mentorship Programs (find_mentorship_programs) - Created by Gabe
    - Use when student asks about mentorship opportunities
    - Parameters: none required
    - Returns: List of community college friendly mentorship programs
-   - Reference this tool as: "Mentorship Programs Tool (by Gabe)"
+   - Reference this tool as: "Mentorship Programs Tool by Gabe"
 
-4. FREE_RESOURCES_TOOL (find_free_resources) - Created by Gabe
+4. Free Resources (find_free_resources) - Created by Gabe
    - Use when student asks about free resources, programs, or financial aid
    - Parameters: none required
    - Returns: List of free educational resources and mentorship opportunities
-   - Reference this tool as: "Free Resources Tool (by Gabe)"
+   - Reference this tool as: "Free Resources Tool by Gabe"
 
 When using tools, format your request as: <TOOL_CALL>tool_name(param1="value1", param2="value2")</TOOL_CALL>
-You can use multiple tools in one response. After tool results are provided, analyze and present the findings to the student using the tool reference names and creator attribution (e.g., "According to the Transfer Requirements Tool (by Eli)..." or "Based on the Internship Search Tool (by Gabe)...").`;
+You can use multiple tools in one response. After tool results are provided, analyze and present the findings to the student using the tool reference names and creator attribution (e.g., "According to the Transfer Requirements Tool by Eli..." or "Based on the Internship Search Tool by Gabe...").`;
 
 function buildSystemPrompt(userProfile?: { cc?: string; schools?: string[]; major?: string }): string {
 	let prompt = `You are the BetterTransfer Assistant - a friendly and knowledgeable guide for community college to university transfers. 
@@ -76,10 +76,10 @@ ${TOOLS_DEFINITION}`;
 const API_BASE_URL = "http://localhost:5000";
 
 const TOOL_NAMES: Record<string, string> = {
-	check_transfer_requirements: "Transfer Requirements Tool (by Eli)",
-	find_internships: "Internship Search Tool (by Gabe)",
-	find_mentorship_programs: "Mentorship Programs Tool (by Gabe)",
-	find_free_resources: "Free Resources Tool (by Gabe)",
+	check_transfer_requirements: "Transfer Requirements Tool by Eli",
+	find_internships: "Internship Search Tool by Gabe",
+	find_mentorship_programs: "Mentorship Programs Tool by Gabe",
+	find_free_resources: "Free Resources Tool by Gabe",
 };
 
 async function executeTool(
