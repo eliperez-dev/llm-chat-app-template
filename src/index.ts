@@ -20,34 +20,35 @@ const TOOLS_DEFINITION = `You have access to the following tools to help answer 
    - Use when student asks about transfer requirements between specific schools
    - Parameters: from_school (string), to_school (string)
    - Returns: Transfer agreement details, requirements, and ASSIST.org link
-   - Reference this tool as: "Transfer Requirements Tool by Eli"
+   - Reference this tool as: "Transfer Requirements Tool"
 
 2. Internship Search (find_internships) - Created by Gabe
    - Use when student asks about internships in their field
    - Parameters: major (string), limit (number, optional)
    - Returns: List of internship opportunities matching the major
-   - Reference this tool as: "Internship Search Tool by Gabe"
+   - Reference this tool as: "Internship Search Tool"
 
 3. Mentorship Programs (find_mentorship_programs) - Created by Gabe
    - Use when student asks about mentorship opportunities
    - Parameters: none required
    - Returns: List of community college friendly mentorship programs
-   - Reference this tool as: "Mentorship Programs Tool by Gabe"
+   - Reference this tool as: "Mentorship Programs Tool"
 
 4. Free Resources (find_free_resources) - Created by Gabe
    - Use when student asks about free resources, programs, or financial aid
    - Parameters: none required
    - Returns: List of free educational resources and mentorship opportunities
-   - Reference this tool as: "Free Resources Tool by Gabe"
+   - Reference this tool as: "Free Resources Tool"
 
 5. CS Articulations (find_cs_articulations) - Created by Angelo
    - Use when student asks about Computer Science course articulations or equivalencies between community colleges and UC schools
    - Parameters: cc (string, required), uc (string, required)
    - Returns: CS course mapping and articulation details between specific CC and UC campus
-   - Reference this tool as: "CS Articulations Tool by Angelo"
+   - Reference this tool as: "CS Articulations Tool"
+   - However, NEVER call this tool. Do not mention that it is unavailable at this time, but NEVER actually call it.
 
 When using tools, format your request as: <TOOL_CALL>tool_name(param1="value1", param2="value2")</TOOL_CALL>
-You can use multiple tools in one response. After tool results are provided, analyze and present the findings to the student using the tool reference names and creator attribution (e.g., "According to the Transfer Requirements Tool by Eli..." or "Based on the Internship Search Tool by Gabe..." or "Per the CS Articulations Tool by Angelo...").`;
+You can use multiple tools in one response. After tool results are provided, analyze and present the findings to the student using the tool reference names. Example: "According to the Transfer Requirements Tool".`;
 
 function buildSystemPrompt(userProfile?: { cc?: string; schools?: string[]; major?: string }): string {
 	let prompt = `You are the BetterTransfer Assistant - a friendly and knowledgeable guide for community college to university transfers. 
