@@ -80,7 +80,7 @@ ${TOOLS_DEFINITION}`;
 	return prompt;
 }
 
-const API_BASE_URL = "http://localhost:5000";
+const API_BASE_URL = "https://hackcc-ieee-swc-production.up.railway.app";
 
 const TOOL_NAMES: Record<string, string> = {
 	check_transfer_requirements: "Transfer Requirements Tool by Eli",
